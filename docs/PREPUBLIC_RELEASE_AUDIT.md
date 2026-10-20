@@ -1,0 +1,32 @@
+# Pre-public release audit | 2026-10-20
+
+**Status: HOLD — private repository. This is a pre-release readiness report, not permission to publish.**
+
+## Verified remotely
+
+- **Latest CI:** 50 of 50 isolated checks PASS on Windows Server 2025 and Ubuntu 24.04, Python 3.12 (47 mocked functional/unit checks plus three tracked-file/release-hygiene checks), [run 39484914326](https://github.com/tabitha-dev/jarvis-local-ai/actions/runs/39484914326).
+- **Source repository:** `main` currently has a project-authored MIT license, README, third-party notices, security guidance, voice chooser (Windows default / optional Cori), pre-release installer and source-only packaging allowlist.
+- **Local HTTP protections:** token, origin and host checks are implemented and tested at source level. No formal penetration test has been performed.
+- **Source hygiene:** private `commands.json`, virtual environments, models and media are absent from the reviewed tracked file tree. GitHub Actions additionally checks for accidentally tracked private/config/media files; this is not a full secret-history or binary forensics scan.
+- **Video:** separately approved creator video has been produced, but does not prove Windows clean-install readiness and does not grant permission to publish the source.
+
+## Mandatory gates before switching repository visibility to Public
+
+- [ ] **Fresh Windows install:** test `setup.bat` in an independent, properly authorized Windows 10/11 environment with no inherited Python/Ollama/model setup. Follow [Windows test checklist](WINDOWS_RELEASE_TEST.md). Real hardware and actual downloads **cannot** be validated with GitHub's mocked unit tests.
+- [ ] **Hardware and runtime:** test Windows default TTS, actual microphone and speakers, optional Cori selection and fallback, browser commands, HUD, typed prompt and local Ollama response. Record truthful PASS/FAIL results.
+- [ ] **Dependency lock:** on a verified working Windows installation, run `update_lock.bat` (it runs `pip freeze` and `pip check`), review versions and paths, commit `requirements.lock.txt`, then repeat the clean install against it. Do **not** invent or auto-pin arbitrary Windows versions on CI/Linux.
+- [ ] **Wake-word license and behavior:** the installer currently downloads `openWakeWord`'s pretrained `hey_jarvis`, and ordinary startup uses it by default. The pretrained model is **CC BY-NC-SA 4.0 / noncommercial**. Before commercial or monetized use, either obtain sufficient permission, make push-to-talk/typed mode the safe default and reserve wake-word use for appropriately licensed opt-in, or otherwise verify the intended use is permitted. Mere notice/disclaimer does not override the license.
+- [ ] **Voice rights:** Windows built-in TTS is the default and Alan has been excluded. Optional Cori's public-domain **training recordings alone do not establish** all voice-model/output/commercial rights. Verify those terms before promoting a monetized voice demo or distributing outputs.
+- [ ] **Real Windows safety review:** confirm command allowlists, install scripts and loopback HUD behavior on Windows, without enabling unsafe external access or bypassing security warnings. Scrub personal paths and any private settings from shareable artifacts.
+- [ ] **Release package:** inspect source-only ZIP from `make_release.bat` / `tools/package_release.py`; no pretrained model, voice binary, local config, `.venv`, chat transcript, personal logs, API keys, nor unauthorized recordings.
+- [ ] **Owner approval:** review and approve the public MIT code release, model/voice licensing decisions, exact release files, and GitHub visibility change. Do **not** publish this repository, create a public release or update YouTube download links before this step.
+
+## Test handoff for a real Windows PC
+
+1. Follow [the independent Windows test guide](WINDOWS_RELEASE_TEST.md), preferably on a second computer with permission. Record the OS, Python/Ollama versions, whether the machine had Python/Ollama already, and a PASS/FAIL per checklist item.
+2. Run `tools\\windows_test_report.bat` **locally** after installation. Open the resulting `windows-test-report.txt` and remove anything you do not want shared. The report intentionally avoids computer/user names but is still reviewed before upload.
+3. Run `update_lock.bat` **only after** the environment passes; review `requirements.lock.txt` before committing.
+4. Provide the redacted report and PASS/FAIL notes for review. Do not send raw personal logs or access tokens. The maintainer can then address failures in the existing private repository.
+5. Only after the last gate is complete and owner explicitly approves public release, change repository visibility and verify the download while signed out.
+
+**Until those checks are completed, the correct external description is “private pre-release prototype with 50 passing isolated checks”, not “publicly installation-tested” or “commercially cleared.”**
