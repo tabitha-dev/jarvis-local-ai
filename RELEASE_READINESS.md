@@ -8,7 +8,7 @@
 - [x] Add loopback endpoint token, Host and Origin checks, including `/events`, and regression tests.
 - [x] Provide clear setup and safety documentation with authentic interface imagery.
 - [x] Provide an explicit source-only package checker (no automatic publishing).
-- [x] **47 of 47 isolated source/unit tests PASS on Windows Server 2025 and Ubuntu 24.04**, Python 3.12, on the merged `main` commit. [Verified CI run](https://github.com/tabitha-dev/jarvis-local-ai/actions/runs/39367091485). The 47 tests include voice selection and fallback; tests install only development/test dependencies and **do not** download local AI models or verify microphone/speaker operation.
+- [x] **50 of 50 isolated checks PASS on Windows Server 2025 and Ubuntu 24.04**, Python 3.12, on the private release-preparation branch (47 mocked functional/unit checks + 3 tracked-file/release-hygiene checks). [Verified CI run](https://github.com/tabitha-dev/jarvis-local-ai/actions/runs/39484914326). The core tests include voice selection and fallback; tests install only development/test dependencies and **do not** download local AI models or verify microphone/speaker operation.
 - [ ] On the working Windows PC run `update_lock.bat` after successful setup, validate the generated `requirements.lock.txt` with `pip check`, and commit the tested versions. **Lock file not yet supplied; unpinned installs can drift.**
 - [ ] Complete and record the [fresh Windows verification checklist](docs/WINDOWS_RELEASE_TEST.md), including an **independent clean Windows 10/11 setup** with a working microphone, output speaker and actual model downloads.
 - [ ] Review Windows command allowlists, local HTTP routes and setup scripts on a real PC.
