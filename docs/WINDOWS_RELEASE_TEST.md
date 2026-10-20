@@ -32,12 +32,12 @@ In the clean environment:
 - [ ] Download or clone the **private** candidate source and inspect `setup.bat` yourself. Never bypass SmartScreen blindly.
 - [ ] Run `setup.bat`. Confirm each of the six numbered stages completes, and simulate/observe a failure so the script exits non-zero without a false success message.
 - [ ] From a verified Windows environment, run `update_lock.bat`, review `requirements.lock.txt` for reproducible versions and sensitive local paths, commit the lock file, and repeat a clean install using it.
-- [ ] Verify `ollama list` includes the configured Gemma model, and the Piper, Whisper and wake-word assets exist.
+- [ ] Verify `ollama list` includes the configured Gemma model and the Whisper asset exists. Piper voice files should exist only if Cori was selected; no pretrained wake-word model should be downloaded by default.
 - [ ] Run `run_tests.bat` with real Python dependencies; record the final reported test count and result.
 - [ ] Run `python jarvis.py --text` and ask a simple question; confirm the local model replies.
 - [ ] Run `run_jarvis.bat`; confirm the HUD opens without exposing a LAN port.
 - [ ] Type “what time is it?” in the HUD and confirm the response.
-- [ ] Test microphone selection, push-to-talk, wake-word activation and playback on the real device.
+- [ ] Test the HUD TALK button, push-to-talk, and speaker playback. Optional `--wake` uses a separate noncommercial model and must not be assumed part of the default install.
 - [ ] Use a **safe example** such as “open Notepad”; check that the expected application actually opens, and test URL and volume commands.
 - [ ] Test controlled loss of network **after** downloads: local inference vs browser actions are documented correctly. Do not claim an offline test if not performed.
 - [ ] Confirm regular user permissions are sufficient or document any prompts and limitations.
