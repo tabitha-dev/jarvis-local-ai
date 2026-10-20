@@ -1,20 +1,22 @@
 """
 Jarvis - an offline voice assistant for Windows.
 
-  Wake word  : "Hey Jarvis"   (openWakeWord, runs locally)
+  Talk       : click TALK in the HUD (default). Optional wake word with --wake
   Ears       : faster-whisper (speech-to-text, runs locally)
   Brain      : Ollama         (local AI model, no tokens, no internet)
   Voice      : Windows by default, or user-selected Piper Cori (optional)
                falls back to Windows if the selected Piper voice is unavailable
 
 Run:
-  python jarvis.py            -> say "Hey Jarvis", then talk
-  python jarvis.py --ptt      -> press Enter to talk (no wake word)
+  python jarvis.py            -> click TALK in the HUD (or type there), then talk
+  python jarvis.py --ptt      -> press Enter in the console to talk
+  python jarvis.py --wake     -> OPTIONAL "Hey Jarvis" wake word (downloads a
+                                 pretrained model licensed for NON-COMMERCIAL
+                                 use only; see THIRD_PARTY_NOTICES.md)
   python jarvis.py --text     -> type instead of talk (good for testing)
   python jarvis.py --no-ui    -> no HUD window, console only
 
-The HUD window opens automatically. You can also type to Jarvis there,
-or click TALK to speak without saying the wake word.
+The HUD window opens automatically. Click TALK to speak, or type to Jarvis there.
 
 Say "goodbye" to quit, or "forget everything" to clear the conversation.
 """
@@ -60,7 +62,7 @@ USER_NAME = "Friend"               # change this to your name
 UI_PORT = 8765                     # local-only HUD port (tries the next few if busy)
 
 SYSTEM_PROMPT = (
-    "You are Jarvis, a witty, loyal British AI assistant, like the one from Iron Man. "
+    "You are Jarvis, a witty, loyal British AI assistant. "
     f"The user is {USER_NAME}. Your replies are spoken out loud, so: "
     "keep answers short (1-3 sentences unless asked for more), never use markdown, "
     "bullet points, emojis, or code blocks, and spell things out the way you'd say them. "
@@ -157,8 +159,37 @@ def beep(freq=880, ms=120):
 # --------------------------------------------------------------------------
 # Wake word
 # --------------------------------------------------------------------------
+class TalkButton:
+    """Default listener: waits for the HUD's TALK button or typed text.
+
+    No wake-word model is downloaded or loaded in this mode.
+    """
+
+    def wait(self, mic, ui=None):
+        mic.flush()
+        n = 0
+        while True:
+            chunk = mic.read()
+            if ui:
+                msg = ui.poll()
+                if msg:
+                    return msg
+                n += 1
+                if n % 2 == 0:
+                    ui.level(chunk, mic.noise_floor)
+
+
+WAKE_LICENSE_NOTE = (
+    'Wake word ON. The pretrained "hey_jarvis" model is licensed CC BY-NC-SA 4.0 '
+    "(non-commercial use only). See THIRD_PARTY_NOTICES.md."
+)
+
+
 class WakeWord:
+    """OPTIONAL (--wake). Downloads openWakeWord\'s pretrained hey_jarvis model."""
+
     def __init__(self):
+        print(f"  {WAKE_LICENSE_NOTE}")
         import openwakeword
         from openwakeword.model import Model
         openwakeword.utils.download_models(["hey_jarvis"])  # one-time download
@@ -558,9 +589,20 @@ def handle(text, brain, voice, ui):
     return True
 
 
+def listen_mode(args):
+    """How Jarvis waits: button by default, Enter, or optional wake word."""
+    if getattr(args, "wake", False):
+        return "wake"
+    if getattr(args, "ptt", False) or getattr(args, "no_ui", False):
+        return "enter"
+    return "button"
+
+
 def main():
     parser = argparse.ArgumentParser(description="Offline Jarvis voice assistant")
-    parser.add_argument("--ptt", action="store_true", help="press Enter to talk instead of the wake word")
+    parser.add_argument("--ptt", action="store_true", help="press Enter in the console to talk")
+    parser.add_argument("--wake", action="store_true",
+                        help='optional "Hey Jarvis" wake word (non-commercial pretrained model)')
     parser.add_argument("--text", action="store_true", help="type instead of talk")
     parser.add_argument("--no-ui", action="store_true", help="don't open the HUD window")
     args = parser.parse_args()
@@ -588,18 +630,25 @@ def main():
     print("  ears ready (Whisper)")
     mic = Mic()
     mic.calibrate()
-    wake = None if args.ptt else WakeWord()
+    mode = listen_mode(args)
+    wake = WakeWord() if mode == "wake" else (TalkButton() if mode == "button" else None)
 
     ui.open_window()
     ui.emit("sys", text="All systems online. AI running locally on this PC.")
+    if mode == "wake":
+        ui.emit("sys", text=WAKE_LICENSE_NOTE)
     voice.say("Jarvis online.")
-    prompt = "Press Enter, then speak." if args.ptt else 'Say "Hey Jarvis" (or use the window)...'
+    prompt = {
+        "enter": "Press Enter, then speak.",
+        "button": "Click TALK in the window (or type there)...",
+        "wake": 'Say "Hey Jarvis" (or use the window)...',
+    }[mode]
 
     while True:
         try:
             ui.state("idle")
             print(f"\n{prompt}")
-            if args.ptt:
+            if mode == "enter":
                 input()
                 mic.flush()
                 kind, payload = "wake", None
