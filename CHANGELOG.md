@@ -1,5 +1,12 @@
 # Changelog
 
+## Private release-preparation update | October 20, 2026
+- The HUD's **TALK** button is the default listener; the pretrained `hey_jarvis` wake word is **opt-in via `--wake`** only, with its noncommercial license displayed.
+- `setup.bat` no longer downloads the restricted wake-word model by default.
+- The source includes `tests/test_listen_mode.py` (six new regression tests) and `docs/VOICES.md`; the release package allowlist includes both.
+- The system persona no longer references Iron Man.
+- Public release is still blocked pending fresh Windows installation, verified Windows dependency lock, and final licensing decisions.
+
 ## Voice preference and beginner setup | October 2026
 - Stage 4 of setup now shows a strict numbered voice menu: Windows built-in (default, no download) or optional Piper Cori, with unattended/Enter default to Windows.
 - Voice choice is saved atomically in the user-only Git-ignored `commands.json` rather than requiring edits to `jarvis.py`. A missing/broken Cori voice falls back to Windows.
