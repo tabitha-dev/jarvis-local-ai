@@ -6,7 +6,7 @@ cd /d "%~dp0" || goto :failed
 echo.
 echo =================================================
 echo  JARVIS SETUP - Windows development preview
- echo  Requires internet and can take a while to finish.
+echo  Requires internet and can take a while to finish.
 echo  Review README and THIRD_PARTY_NOTICES first.
 echo =================================================
 echo.
@@ -61,7 +61,16 @@ if not exist ".venv\Scripts\python.exe" (
 )
 ".venv\Scripts\python.exe" -m pip install --upgrade pip
 if errorlevel 1 goto :failed
-".venv\Scripts\python.exe" -m pip install -r requirements.txt
+set "REQS=requirements.txt"
+if exist "requirements.lock.txt" (
+    set "REQS=requirements.lock.txt"
+    echo Using the pinned requirements.lock.txt from a verified Windows environment.
+) else (
+    echo NOTE: requirements.lock.txt is not available yet. Package versions are NOT pinned.
+    echo This is a development install; complete Windows verification before public release.
+)
+echo Installing packages from %REQS%
+".venv\Scripts\python.exe" -m pip install -r "%REQS%"
 if errorlevel 1 goto :failed
 if not exist "commands.json" (
     copy /y "commands.example.json" "commands.json" >nul

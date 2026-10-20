@@ -1,0 +1,8 @@
+# Windows batch files MUST use CRLF line endings, or cmd.exe can miss
+# :labels used by goto/call. Keep everything else normalized to LF.
+* text=auto
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.jpg binary
+*.png binary
+*.gif binary

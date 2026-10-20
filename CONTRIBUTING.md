@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for your interest in Jarvis. This repository is currently in **private release review**, and the project-code license has not yet been chosen. Please do not redistribute source or third-party model weights without proper permission.
+Thanks for your interest in Jarvis. Project-authored code carries the [MIT License](LICENSE), but the repository is still a **private pre-release** and has not been distributed publicly. Third-party models, voices and packages keep their own licenses (see [Third-party notices](THIRD_PARTY_NOTICES.md)); please don't redistribute model weights or voice files.
 
 ## Before contributing
 
