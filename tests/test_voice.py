@@ -109,9 +109,25 @@ class VoiceRuntimeTests(unittest.TestCase):
         self.pyttsx3 = mock.Mock()
         self.pyttsx3.init.return_value=mock.Mock()
         self.piper_class = mock.Mock()
-        self.mod_patch=mock.patch.dict(sys.modules,{'pyttsx3':self.pyttsx3,'piper':types.SimpleNamespace(PiperVoice=self.piper_class)})
+        self.mod_patch=mock.patch.dict(sys.modules,{'pyttsx3':self.pyttsx3,'piper':types.SimpleNamespace(PiperVoice=self.piper_class),'win32com': None, 'win32com.client': None})
         self.mod_patch.start()
         self.addCleanup(self.mod_patch.stop)
+
+    def test_sapi_available_speaks_using_windows(self):
+        dispatch = mock.Mock()
+        speech = mock.Mock()
+        dispatch.return_value = speech
+        win32com = types.ModuleType('win32com')
+        client = types.ModuleType('win32com.client')
+        client.Dispatch = dispatch
+        win32com.client = client
+        with mock.patch.dict(sys.modules, {'win32com':win32com,'win32com.client':client}), \
+             mock.patch.object(jarvis,'get_voice',return_value='windows'):
+            voice = jarvis.Voice()
+            voice.say('Hello from Jarvis')
+        dispatch.assert_called_once_with('SAPI.SpVoice')
+        speech.Speak.assert_called_once_with('Hello from Jarvis')
+        self.pyttsx3.init.assert_not_called()
 
     def test_windows_default_uses_windows_and_no_piper(self):
         with mock.patch.object(jarvis,'get_voice',return_value='windows'):
