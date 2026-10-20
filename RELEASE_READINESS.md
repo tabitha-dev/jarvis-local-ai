@@ -10,6 +10,7 @@
 - [x] Provide an explicit source-only package checker (no automatic publishing).
 - [x] **56 of 56 isolated checks PASS on Windows Server 2025 and Ubuntu 24.04**, Python 3.12, on the private candidate branch (47 prior functional/unit checks + 6 listen-mode checks + 3 release-hygiene checks). [Verified CI run](https://github.com/tabitha-dev/jarvis-local-ai/actions/runs/39502432199). The core tests include voice selection and fallback; tests install only development/test dependencies and **do not** download local AI models or verify microphone/speaker operation.
 - [ ] On the working Windows PC run `update_lock.bat` after successful setup, validate the generated `requirements.lock.txt` with `pip check`, and commit the tested versions. **Lock file not yet supplied; unpinned installs can drift.**
+- [x] User-reported Windows 11 *fresh-folder* end-to-end test on the creator's existing computer (2026-10-20): speech recognition for “Jarvis,” audible voice reply, and app launch. Python/Ollama were already installed; this is **not** an independent clean-PC test.
 - [ ] Complete and record the [fresh Windows verification checklist](docs/WINDOWS_RELEASE_TEST.md), including an **independent clean Windows 10/11 setup** with a working microphone, output speaker and actual model downloads.
 - [ ] Review Windows command allowlists, local HTTP routes and setup scripts on a real PC.
 - [ ] Review the [pre-public audit and handoff](docs/PREPUBLIC_RELEASE_AUDIT.md), then complete privacy-safe test evidence before a source-only public release.
@@ -20,7 +21,7 @@
 - [x] Third-party license review completed 2026-10-19: [docs/LICENSE_REVIEW.md](docs/LICENSE_REVIEW.md). Not legal advice.
 - [x] Remove Alan from public setup, use Windows as default and offer optional Cori, with user-local voice selection stored in Git-ignored commands.json.
 - [ ] Owner decisions from that review: Cori model/output rights (optional voice), commercial rights for any explicitly enabled wake-word use, and source-only distribution.
-- [x] Make pretrained `hey_jarvis` **opt-in**. The ordinary TALK-button startup and setup do not load or download this CC BY-NC-SA noncommercial model. The explicit `--wake` option still requires users to follow its license.
+- [x] Make pretrained `hey_jarvis` **opt-in**. The ordinary hands-free “Jarvis, …” startup uses faster-whisper without loading or downloading that CC BY-NC-SA noncommercial model; TALK and typing remain available. The explicit `--wake` option still requires users to follow its license.
 - [ ] Create release notes and a verified source ZIP after clean-install testing.
 - [ ] Explicitly approve changing repository visibility to Public and distributing code.
 - [ ] Update the YouTube description only after the release URL actually works when signed out.
