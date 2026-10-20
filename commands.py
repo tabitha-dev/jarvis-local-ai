@@ -347,9 +347,13 @@ def cmd_system(t):
     if re.search(r"(take a |take |grab a )?screenshot|screen ?shot", t):
         start("ms-screenclip:")
         return "Select the area you want to capture."
-    if re.search(r"^(what time is it|what's the time|what is the time|time)$", t):
+    # Catch natural time/date variations immediately without involving the language model.
+    # Questions such as "what time is it in Tokyo" still go to conversational AI.
+    if re.search(r"^(?:tell me |do you know )?(what time is it|what time it is|what's the time|what is the time|"
+                 r"the time|time)(?: (?:right now|now|currently|please|jarvis))*$", t):
         return "It's " + dt.datetime.now().strftime("%I:%M %p").lstrip("0") + "."
-    if re.search(r"^(what's the date|what is the date|what day is it|what's today|today's date)$", t):
+    if re.search(r"^(?:tell me )?(what's the date|what is the date|what day is it|what's today|today's date|"
+                 r"the date)(?: (?:today|right now|now|please|jarvis))*$", t):
         return "Today is " + dt.datetime.now().strftime("%A, %B %d").replace(" 0", " ") + "."
     return None
 

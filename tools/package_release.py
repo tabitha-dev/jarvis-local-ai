@@ -9,14 +9,14 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 FILES = (
-    '.gitignore', 'README.md', 'RELEASE_READINESS.md',
+    '.gitignore', 'README.md', 'RELEASE_READINESS.md', 'CHANGELOG.md', 'LICENSE',
     'THIRD_PARTY_NOTICES.md', 'CONTRIBUTING.md',
     'commands.example.json', 'commands.py', 'jarvis.py',
     'setup.bat', 'run_jarvis.bat', 'run_tests.bat',
     'make_release.bat', 'requirements.txt', 'ui.html',
-    'tests/test_commands.py', 'tests/test_ui_security.py',
+    'tests/test_commands.py', 'tests/test_ui_security.py', 'tests/test_states.py',
     'docs/ARCHITECTURE.md', 'docs/INSTALL_WINDOWS.md',
-    'docs/TROUBLESHOOTING.md', 'docs/SECURITY.md',
+    'docs/TROUBLESHOOTING.md', 'docs/SECURITY.md', 'docs/WINDOWS_RELEASE_TEST.md',
     'tools/package_release.py',
     'assets/jarvis-real-hud.jpg',
 )
@@ -51,7 +51,7 @@ def main():
         print('STOP: target already exists; refusing to overwrite it.', file=sys.stderr)
         return 2
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    paths = (*FILES, 'LICENSE')
+    paths = FILES
     with zipfile.ZipFile(args.output, 'x', compression=zipfile.ZIP_DEFLATED) as z:
         for name in paths:
             z.write(ROOT / name, arcname=f'jarvis-local-ai/{name}')

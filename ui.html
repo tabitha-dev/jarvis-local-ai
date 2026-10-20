@@ -75,6 +75,8 @@
   body[data-state="thinking"] .spin-b { animation-duration: 3.5s; }
   body[data-state="thinking"] .spin-c { animation-duration: 1.6s; }
   body[data-state="listening"] .spin-c { animation-duration: 6s; }
+  body[data-state="hearing"] .spin-b { animation-duration: 8s; }
+  body[data-state="hearing"] .spin-c { animation-duration: 3s; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
   .stroke { stroke: var(--accent); transition: stroke .5s; fill: none; }
@@ -175,7 +177,7 @@
   <main>
     <section class="stage">
       <div class="readout tl">
-        USER <b id="user">TABITHA</b><br>
+        USER <b id="user">FRIEND</b><br>
         LINK <b id="link">CONNECTING</b><br>
         SESSION <b id="uptime">00:00</b>
       </div>
@@ -240,6 +242,7 @@
   const LABELS = {
     idle:      ["STANDBY",    "SAY “HEY JARVIS” OR TYPE BELOW"],
     listening: ["LISTENING",  "GO AHEAD, I'M ALL EARS"],
+    hearing:   ["HEARING",    "TURNING SPEECH INTO TEXT"],
     thinking:  ["PROCESSING", "RUNNING LOCAL MODEL"],
     speaking:  ["RESPONDING", ""],
     offline:   ["OFFLINE",    "RESTART JARVIS TO RECONNECT"],

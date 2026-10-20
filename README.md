@@ -10,8 +10,9 @@
 [![Windows](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011-0078D4?logo=windows&logoColor=white)](docs/INSTALL_WINDOWS.md)
 [![Local inference](https://img.shields.io/badge/AI-Local%20inference-0B9C98)](docs/ARCHITECTURE.md)
 [![Stage](https://img.shields.io/badge/Status-Pre--release-F2B84B)](RELEASE_READINESS.md)
+[![Source tests](https://github.com/tabitha-dev/jarvis-local-ai/actions/workflows/quality.yml/badge.svg)](https://github.com/tabitha-dev/jarvis-local-ai/actions/workflows/quality.yml)
 
-**[Get started](#quick-start)** · **[See how it works](#how-it-works)** · **[Try commands](#what-can-jarvis-do)** · **[Security](docs/SECURITY.md)** · **[Watch Tabitha Dev](https://www.youtube.com/@tabitha-dev)**
+**[Get started](#quick-start)** · **[Explore features](#what-can-jarvis-do)** · **[Understand the architecture](#how-it-works)** · **[Security](docs/SECURITY.md)** · **[Tabitha Dev on YouTube](https://www.youtube.com/@tabitha-dev)**
 
 <img src="assets/jarvis-real-hud.jpg" alt="Real Windows screen recording of the custom Jarvis dashboard showing its amber processing state" width="840" />
 
@@ -20,7 +21,7 @@
 </div>
 
 > [!IMPORTANT]
-> **Development preview, not a verified public release.** The source and tests are under review. A complete clean-Windows installation, live microphone test and third-party model/license review are still required. Please read [Release readiness](RELEASE_READINESS.md) before installing or distributing. The repository is currently private.
+> **Private development preview. No public release yet.** The source and tests are under review. A complete clean-Windows installation, live microphone test and third-party model/license review are still required. Please read [Release readiness](RELEASE_READINESS.md) before installing or distributing. The repository is currently private.
 
 ## Why I built this
 
@@ -34,13 +35,13 @@ I wanted a computer assistant that felt personal and practical: say what you nee
 | 🧠 **Local AI responses** | Ollama runs the configured Gemma model on your computer after downloading it. No cloud AI API key required. |
 | 🖥️ **Windows actions** | Open installed apps, approved shortcuts and folders; control volume and playback. |
 | 🌐 **Browser shortcuts** | Open websites and start searches. **These activities need internet access.** |
-| ✨ **Live dashboard** | Cyan/amber/white interface states, current transcript and quick commands. |
+| ✨ **Live dashboard** | Clear **LISTENING → HEARING → PROCESSING → RESPONDING** states, transcript and quick commands. |
 | 🛡️ **Local protections** | Loopback-only HUD, per-run command/event-stream tokens, origin checks and shell-free app launching. [Limitations](docs/SECURITY.md) apply. |
 
 ### A few example commands
 
 ```text
-"Hey Jarvis, what time is it?"
+"Hey Jarvis, what time is it right now?"
 "Open Chrome"
 "Open YouTube"
 "Open Chrome and YouTube"
@@ -49,7 +50,7 @@ I wanted a computer assistant that felt personal and practical: say what you nee
 "What can you do?"
 ```
 
-These commands are **implemented in the source**; not every one has been verified in a fresh Windows installation. The published creator video includes authentic footage and a separately labeled simulated setup walkthrough.
+Simple time/date commands return directly from Python without asking the language model. Other questions route to local AI. The examples are **implemented in the source**; not every one has been verified on a fresh Windows installation. The creator video under production includes authentic footage and a separately labeled simulated setup walkthrough.
 
 ## How it works
 
@@ -86,7 +87,7 @@ The wake-word path starts with **openWakeWord**. The commands and conversational
 .\.venv\Scripts\python.exe jarvis.py --no-ui  # console without dashboard
 ```
 
-**Want the details?** [Windows installation guide →](docs/INSTALL_WINDOWS.md)
+**Want the details?** [Windows installation guide →](docs/INSTALL_WINDOWS.md) · [Fresh-PC verification checklist →](docs/WINDOWS_RELEASE_TEST.md)
 
 ## Personalize your assistant
 
@@ -96,12 +97,12 @@ The `commands.example.json` file is a starter template. Setup makes a personal `
 {
   "browser": "chrome",
   "apps": {"notes": "notepad"},
-  "websites": {"my portfolio": "https://example.com"},
+  "websites": {"my portfolio": "https://code.tabitha.dev", "my channel": "https://www.youtube.com/@tabitha-dev"},
   "folders": {"projects": "C:\\Code"}
 }
 ```
 
-Edit the names, apps, folders, and website addresses to suit your computer. Edit `USER_NAME`, `OLLAMA_MODEL`, and audio preferences near the top of `jarvis.py`. For colors, edit the CSS variables in `ui.html`. Never commit a personalized config or private file.
+The **PORTFOLIO** and **MY CHANNEL** buttons intentionally start with the creator’s public website and YouTube channel. They are examples: edit their URLs in your private `commands.json` to point to *your* sites. The assistant starts with the neutral name `Friend` (never “Tabitha”); update `USER_NAME` in `jarvis.py` to personalize it. Edit other apps, folders and shortcuts to suit your computer. You can also change `OLLAMA_MODEL` and audio preferences near the top of `jarvis.py`. For colors, edit the CSS variables in `ui.html`. Never commit a personalized config or private file.
 
 ## Project files
 
@@ -122,7 +123,7 @@ RELEASE_READINESS.md   Outstanding publishing checks
 
 ## Testing and transparency
 
-Run `python -m unittest discover tests -v` after installing the necessary test dependencies. The suite **mocks** application launches and audio actions; it does not prove that Chrome opened, that wake-word recognition worked through a physical microphone, or that the model installed successfully. See the [release checklist](RELEASE_READINESS.md) for the real Windows validation still needed.
+The code-level suite is configured for Windows and Ubuntu GitHub-hosted runners with test dependencies installed. The current development candidate includes **33 regression tests** covering mocked commands, HUD states and local HTTP authorization; see [GitHub Actions](https://github.com/tabitha-dev/jarvis-local-ai/actions) for the latest run result. Run `python -m unittest discover tests -v` after installing the necessary test dependencies. The suite **mocks** application launches and audio actions; it does not prove that Chrome opened, that wake-word recognition worked through a physical microphone, or that the model installed successfully. See the [release checklist](RELEASE_READINESS.md) for the real Windows validation still needed.
 
 **Local inference ≠ every action is offline.** Model inference is intended to run locally after downloading model weights; opening web pages and searching are online actions. A recorded HUD status message is not proof that a live network-disconnection test occurred.
 
@@ -134,7 +135,7 @@ Run `python -m unittest discover tests -v` after installing the necessary test d
 
 Made by **[Tabitha Dev](https://code.tabitha.dev)** · [GitHub](https://github.com/tabitha-dev) · [YouTube tutorials](https://www.youtube.com/@tabitha-dev)
 
-**Project code license:** *not yet selected*. No general reuse or redistribution permission is asserted until the creator chooses a license and publishes it. Model weights, voices and dependencies belong to their respective owners and follow their **separate** licenses; see [Third-party notices](THIRD_PARTY_NOTICES.md). OpenWakeWord's pretrained models may carry noncommercial limits. No Marvel artwork, voice or footage is distributed, and this project is not affiliated with Marvel or Disney.
+**Project source code:** [MIT License](LICENSE) (copyright Tabitha Dev). This covers the project-authored code only, **not** downloaded models, voices, data sets, software dependencies or third-party trademarks. A public project release is still pending. Model weights, voices and dependencies belong to their respective owners and follow their **separate** licenses; see [Third-party notices](THIRD_PARTY_NOTICES.md). OpenWakeWord's pretrained models may carry noncommercial limits. No Marvel artwork, voice or footage is distributed, and this project is not affiliated with Marvel or Disney.
 
 <div align="center">
 

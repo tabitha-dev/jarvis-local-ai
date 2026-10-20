@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install Linux PortAudio shared library
+      - name: Install PortAudio library for Linux native import
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update -qq

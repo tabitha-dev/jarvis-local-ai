@@ -614,7 +614,7 @@ def main():
             print("Listening...")
             audio = mic.record_utterance(ui)
             beep(660, 80)
-            ui.state("thinking")
+            ui.state("hearing")  # Listening ended; transcribing audio, not yet asking the AI.
             text = ears.transcribe(audio)
             if not text:
                 msg = (f"Didn't catch that. Loudest sound {mic.last_peak:.0f}, "

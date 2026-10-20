@@ -66,6 +66,16 @@ class TestRouting(FakeLaunchers):
             self.assertIsNone(self.run_cmd(q), q)
         self.assertEqual(self.calls, [])
 
+    def test_time_questions_are_instant(self):
+        for q in ("What time is it right now?", "Hey Jarvis, what time is it?", "what's the time now",
+                  "tell me the time please", "do you know what time it is", "What day is it today?"):
+            reply = self.run_cmd(q)
+            self.assertIsNotNone(reply, q)
+            self.assertTrue(reply.startswith(("It's", "Today is")), (q, reply))
+
+    def test_other_time_zones_are_not_answered_from_the_pc_clock(self):
+        self.assertIsNone(self.run_cmd("what time is it in Tokyo"))
+
     def test_long_unknown_open_goes_to_ai(self):
         self.assertIsNone(self.run_cmd("start a timer for ten minutes please"))
 

@@ -1,6 +1,6 @@
 # Third-party software and models
 
-This repository contains **only Jarvis's own source code**. It does not bundle any models, voices or Python packages. `setup.bat` downloads them from their official sources on your machine, under their own licenses.
+This repository contains **Jarvis-authored source code licensed under [MIT](LICENSE)** and its documentation. The MIT license does **not** supersede third-party restrictions. It does not bundle any models, voices or Python packages. `setup.bat` downloads them from their official sources on your machine, under their own licenses.
 
 | Component | What it does | License | Notes |
 | --- | --- | --- | --- |
