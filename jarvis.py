@@ -1,14 +1,16 @@
 """
 Jarvis - an offline voice assistant for Windows.
 
-  Talk       : click TALK in the HUD (default). Optional wake word with --wake
+  Talk       : say "Jarvis, ..." (default uses Whisper; no restricted model),
+               or click TALK in the HUD. Optional wake-word model with --wake
   Ears       : faster-whisper (speech-to-text, runs locally)
   Brain      : Ollama         (local AI model, no tokens, no internet)
   Voice      : Windows by default, or user-selected Piper Cori (optional)
                falls back to Windows if the selected Piper voice is unavailable
 
 Run:
-  python jarvis.py            -> click TALK in the HUD (or type there), then talk
+  python jarvis.py            -> say "Jarvis, ..." (or click TALK / type)
+  python jarvis.py --button-only -> TALK button or typing without name listening
   python jarvis.py --ptt      -> press Enter in the console to talk
   python jarvis.py --wake     -> OPTIONAL "Hey Jarvis" wake word (downloads a
                                  pretrained model licensed for NON-COMMERCIAL
@@ -22,6 +24,7 @@ Say "goodbye" to quit, or "forget everything" to clear the conversation.
 """
 
 import argparse
+import collections
 import datetime as dt
 import http.server
 import json
@@ -179,6 +182,75 @@ class TalkButton:
                     ui.level(chunk, mic.noise_floor)
 
 
+# Start-of-sentence invocation only; other background speech is ignored.
+WAKE_NAME_RE = re.compile(
+    r"^\W*(?:(?:hey|hi|hello|ok|okay|yo)\W+)?(?:jarvis|jervis|javis|jarvas|jarvi)\b[\W]*(.*)$",
+    re.IGNORECASE | re.DOTALL,
+)
+
+
+def strip_wake_name(text):
+    """Return words following Jarvis, empty string for only its name, or None."""
+    match = WAKE_NAME_RE.match(text or "")
+    return match.group(1).strip(" ,.?!") if match else None
+
+
+class NameTrigger:
+    """Hands-free speech invocation via the already-selected local Whisper model.
+
+    Requires an audible phrase in the microphone; does not download openWakeWord.
+    """
+
+    START_FACTOR = 1.3
+    SUSTAIN = 2
+    PREROLL = 4
+    SILENCE_FRAMES = 8
+    MAX_FRAMES = 90
+
+    def __init__(self, ears):
+        self.ears = ears
+
+    def wait(self, mic, ui=None):
+        mic.flush()
+        pre = collections.deque(maxlen=self.PREROLL)
+        n, loud_run = 0, 0
+        while True:
+            chunk = mic.read()
+            if ui:
+                event = ui.poll()
+                if event:
+                    return event
+                n += 1
+                if n % 2 == 0:
+                    ui.level(chunk, mic.noise_floor)
+            pre.append(chunk)
+            if rms(chunk) <= mic.noise_floor * self.START_FACTOR:
+                loud_run = 0
+                continue
+            loud_run += 1
+            if loud_run < self.SUSTAIN:
+                continue
+            loud_run = 0
+            frames, quiet = list(pre), 0
+            for _ in range(self.MAX_FRAMES):
+                c = mic.read()
+                if ui:
+                    ui.level(c, mic.noise_floor)
+                frames.append(c)
+                quiet = quiet + 1 if rms(c) <= mic.noise_floor * self.START_FACTOR else 0
+                if quiet >= self.SILENCE_FRAMES:
+                    break
+            pre.clear()
+            audio = np.concatenate(frames).astype(np.float32) / 32768.0
+            heard = self.ears.transcribe(audio)
+            words = strip_wake_name(heard)
+            if words is None:
+                if heard:
+                    print(f'  (heard "{heard}", not addressed to Jarvis)')
+                continue
+            return ("said", words) if words else ("wake", None)
+
+
 WAKE_LICENSE_NOTE = (
     'Wake word ON. The pretrained "hey_jarvis" model is licensed CC BY-NC-SA 4.0 '
     "(non-commercial use only). See THIRD_PARTY_NOTICES.md."
@@ -236,6 +308,7 @@ class Voice:
     def __init__(self):
         self.piper = None
         self.fallback = None
+        self.sapi = None
         selection = get_voice()
         model_name = VOICE_MODELS[selection]  # strictly validated; unknown => Windows
         if model_name is not None:
@@ -249,9 +322,20 @@ class Voice:
             except Exception as e:
                 print(f"  (Selected Piper voice unavailable: {e}; using the Windows voice)")
         if self.piper is None:
-            import pyttsx3
-            self.fallback = pyttsx3.init()
-            self.fallback.setProperty("rate", 185)
+            # Windows SAPI is more reliable for repeated replies than pyttsx3.
+            try:
+                import win32com.client
+                self.sapi = win32com.client.Dispatch("SAPI.SpVoice")
+                self.sapi.Rate = 1
+                try:
+                    print("  Windows voice output:", self.sapi.AudioOutput.GetDescription())
+                except Exception:
+                    pass
+            except Exception as exc:
+                print(f"  (Windows SAPI unavailable: {exc}; trying pyttsx3)")
+                import pyttsx3
+                self.fallback = pyttsx3.init()
+                self.fallback.setProperty("rate", 185)
 
     def say(self, text):
         text = clean_for_speech(text)
@@ -261,6 +345,8 @@ class Voice:
             for chunk in self.piper.synthesize(text):
                 sd.play(chunk.audio_int16_array, chunk.sample_rate)
                 sd.wait()
+        elif self.sapi is not None:
+            self.sapi.Speak(text)
         else:
             self.fallback.say(text)
             self.fallback.runAndWait()
@@ -595,12 +681,15 @@ def listen_mode(args):
         return "wake"
     if getattr(args, "ptt", False) or getattr(args, "no_ui", False):
         return "enter"
-    return "button"
+    if getattr(args, "button_only", False):
+        return "button"
+    return "name"
 
 
 def main():
     parser = argparse.ArgumentParser(description="Offline Jarvis voice assistant")
     parser.add_argument("--ptt", action="store_true", help="press Enter in the console to talk")
+    parser.add_argument("--button-only", action="store_true", help="only TALK button and typed commands")
     parser.add_argument("--wake", action="store_true",
                         help='optional "Hey Jarvis" wake word (non-commercial pretrained model)')
     parser.add_argument("--text", action="store_true", help="type instead of talk")
@@ -631,7 +720,8 @@ def main():
     mic = Mic()
     mic.calibrate()
     mode = listen_mode(args)
-    wake = WakeWord() if mode == "wake" else (TalkButton() if mode == "button" else None)
+    wake = (WakeWord() if mode == "wake" else NameTrigger(ears) if mode == "name"
+            else TalkButton() if mode == "button" else None)
 
     ui.open_window()
     ui.emit("sys", text="All systems online. AI running locally on this PC.")
@@ -641,6 +731,7 @@ def main():
     prompt = {
         "enter": "Press Enter, then speak.",
         "button": "Click TALK in the window (or type there)...",
+        "name": 'Say "Jarvis, ..." (or click TALK / type in the window)...',
         "wake": 'Say "Hey Jarvis" (or use the window)...',
     }[mode]
 
@@ -654,6 +745,14 @@ def main():
                 kind, payload = "wake", None
             else:
                 kind, payload = wake.wait(mic, ui)
+
+            if kind == "said":  # one spoken phrase addressed to Jarvis
+                print(f"You: {payload}")
+                if not handle(payload, brain, voice, ui):
+                    break
+                time.sleep(0.2)
+                mic.flush()
+                continue
 
             if kind == "text":  # typed in the window
                 print(f"You (typed): {payload}")
