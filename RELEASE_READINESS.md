@@ -19,8 +19,8 @@
 - [x] Owner-provided release notes requested **MIT** for original project code; MIT `LICENSE` added. Third-party models and voices are **not** included in this grant.
 - [x] Third-party license review completed 2026-10-19: [docs/LICENSE_REVIEW.md](docs/LICENSE_REVIEW.md). Not legal advice.
 - [x] Remove Alan from public setup, use Windows as default and offer optional Cori, with user-local voice selection stored in Git-ignored commands.json.
-- [ ] Owner decisions from that review: Cori model/output rights, wake-word use in monetized videos, source-only distribution.
-- [ ] Decide whether to **disable the default noncommercial `hey_jarvis` pretrained wake-word model** for a public/commercial-ready experience, obtain appropriate permission, or release with its noncommercial limitation prominently disclosed. Its current automatic download and startup use are **not commercially cleared**.
+- [ ] Owner decisions from that review: Cori model/output rights (optional voice), commercial rights for any explicitly enabled wake-word use, and source-only distribution.
+- [x] Make pretrained `hey_jarvis` **opt-in**. The ordinary TALK-button startup and setup do not load or download this CC BY-NC-SA noncommercial model. The explicit `--wake` option still requires users to follow its license.
 - [ ] Create release notes and a verified source ZIP after clean-install testing.
 - [ ] Explicitly approve changing repository visibility to Public and distributing code.
 - [ ] Update the YouTube description only after the release URL actually works when signed out.
