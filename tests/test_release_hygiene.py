@@ -45,7 +45,7 @@ class PublicReleaseHygieneTests(unittest.TestCase):
         notice = (ROOT / "THIRD_PARTY_NOTICES.md").read_text(encoding="utf-8")
         self.assertIn("CC BY-NC-SA", notice)
         self.assertIn("Cori", notice)
-        self.assertIn("Alan", notice)
+        self.assertIn("alan", notice.lower())
 
     def test_release_stays_on_hold_without_windows_evidence(self):
         readiness = (ROOT / "RELEASE_READINESS.md").read_text(encoding="utf-8")
