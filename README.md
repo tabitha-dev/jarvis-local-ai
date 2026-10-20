@@ -1,92 +1,145 @@
-# Jarvis: a local AI voice assistant for Windows
+<div align="center">
 
-> **PRIVATE DEVELOPMENT PREVIEW — NOT A VERIFIED PUBLIC RELEASE.** The source has not been tested on a fresh Windows installation. Please do not treat the setup instructions below as installation proof. The repository will remain private until security, licenses, and fresh-install checks are complete.
+# JARVIS LOCAL AI
 
-Say **"Hey Jarvis"**, ask a question, and a local AI model answers out loud. It can also open apps and websites, search, and control volume and music. It is designed for Windows with local AI. The current code has **not** passed independent end-to-end Windows installation tests. It does not require a cloud AI key for local model responses.
+### A voice-controlled Windows assistant, built with Python and local AI.
 
-> Built by [Tabitha Dev](https://www.youtube.com/@tabitha-dev). Software Engineering, Made Simple.
+**Talk to your computer. Open apps. Ask questions. See the whole conversation unfold in a custom HUD.**
+
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![Windows](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011-0078D4?logo=windows&logoColor=white)](docs/INSTALL_WINDOWS.md)
+[![Local inference](https://img.shields.io/badge/AI-Local%20inference-0B9C98)](docs/ARCHITECTURE.md)
+[![Stage](https://img.shields.io/badge/Status-Pre--release-F2B84B)](RELEASE_READINESS.md)
+
+**[Get started](#quick-start)** · **[See how it works](#how-it-works)** · **[Try commands](#what-can-jarvis-do)** · **[Security](docs/SECURITY.md)** · **[Watch Tabitha Dev](https://www.youtube.com/@tabitha-dev)**
+
+<img src="assets/jarvis-real-hud.jpg" alt="Real Windows screen recording of the custom Jarvis dashboard showing its amber processing state" width="840" />
+
+<sub>Actual cropped frame from the creator's running Windows Jarvis interface. Not a simulated installation or proof of a disconnected-network test.</sub>
+
+</div>
+
+> [!IMPORTANT]
+> **Development preview, not a verified public release.** The source and tests are under review. A complete clean-Windows installation, live microphone test and third-party model/license review are still required. Please read [Release readiness](RELEASE_READINESS.md) before installing or distributing. The repository is currently private.
+
+## Why I built this
+
+I wanted a computer assistant that felt personal and practical: say what you need, watch it respond, and learn how each part works. Jarvis combines a locally running language model with Python commands and a browser-based interface. This is an educational, fan-inspired project by [Tabitha Dev](https://code.tabitha.dev), built to be understood and improved, not a Marvel product.
+
+## What can Jarvis do?
+
+| Feature | How it works |
+| :-- | :-- |
+| 🎙️ **Voice and typing** | Wake word, push-to-talk, or type directly in the HUD. |
+| 🧠 **Local AI responses** | Ollama runs the configured Gemma model on your computer after downloading it. No cloud AI API key required. |
+| 🖥️ **Windows actions** | Open installed apps, approved shortcuts and folders; control volume and playback. |
+| 🌐 **Browser shortcuts** | Open websites and start searches. **These activities need internet access.** |
+| ✨ **Live dashboard** | Cyan/amber/white interface states, current transcript and quick commands. |
+| 🛡️ **Local protections** | Loopback-only HUD, per-run command/event-stream tokens, origin checks and shell-free app launching. [Limitations](docs/SECURITY.md) apply. |
+
+### A few example commands
+
+```text
+"Hey Jarvis, what time is it?"
+"Open Chrome"
+"Open YouTube"
+"Open Chrome and YouTube"
+"Search YouTube for Python tutorials"
+"Turn the volume up"
+"What can you do?"
+```
+
+These commands are **implemented in the source**; not every one has been verified in a fresh Windows installation. The published creator video includes authentic footage and a separately labeled simulated setup walkthrough.
 
 ## How it works
 
-```
-"Hey Jarvis" ─► openWakeWord ─► faster-whisper ─► commands.py ──► runs the command (open Chrome, volume up…)
-  (your mic)      wake word      speech → text        │
-                                                       └─ not a command ─► Ollama + Gemma 4 ─► Piper speaks the answer
-                                         HUD (ui.html) shows every step live
-```
-
-- **Commands are instant.** `commands.py` checks for things like "open Chrome" before the AI is involved.
-- **Everything else goes to the AI**, which runs on your PC through Ollama, and is spoken back sentence by sentence.
-- **The HUD** is one HTML file (SVG + CSS, no frameworks). Python serves it on `127.0.0.1` only and streams state changes with Server-Sent Events.
-
-## What you need
-
-- Windows 10 or 11 with [winget](https://learn.microsoft.com/windows/package-manager/winget/) (built into current Windows)
-- 8 GB RAM minimum, 16 GB recommended
-- About 10 GB free disk space (the AI model is about 4.5 GB)
-- A microphone
-- Internet for the one-time setup. After that, the AI conversation runs locally. Opening websites still needs internet.
-- A graphics card is **not** required. Everything runs on the CPU by default.
-
-## Install
-
-1. Download this repo (**Code → Download ZIP**) and unzip it, for example to `Documents\jarvis`.
-2. **Read `setup.bat` first.** It's short. Only run scripts you've checked.
-3. **After reviewing the batch file**, run `setup.bat` on your own test Windows PC. It attempts to install Python 3.12 and Ollama with winget, create a virtual environment, install packages and download models. Some setup commands do not yet halt on every download failure, so verify the final outputs individually.
-   - If Ollama opens and asks you to sign up, choose **"No thanks, I'll use Ollama locally."**
-   - If Hugging Face prints a yellow "symlinks" warning, read it. It may affect caching and disk usage, and you should not ignore unrelated warnings.
-4. If all setup stages succeed, try `run_jarvis.bat`. The HUD should open when Jarvis starts. This has not yet been verified on a fresh Windows install.
-
-The **first** answer after starting can take a minute or more while the model loads into memory. Later answers are faster.
-
-## Using it
-
-Say "Hey Jarvis", wait for the beep, then talk. Or type in the HUD, or click **TALK** to skip the wake word.
-
-| You say | Jarvis does |
-| --- | --- |
-| "Open Chrome" · "Open VS Code" · "Open Figma" | Opens the app (any installed app, found through your Start Menu) |
-| "Open YouTube" · "Open reddit.com" | Opens the site |
-| "Open downloads" | Opens the folder |
-| "Open Chrome and YouTube" | Does both |
-| "Search YouTube for lo-fi beats" · "Google best React libraries" | Searches |
-| "Play lo-fi beats" | Searches YouTube for it |
-| "Volume up" · "Mute" · "Pause" · "Next song" | Media keys |
-| "Take a screenshot" · "Lock my computer" · "What time is it" | System actions |
-| "Close Chrome" | Asks the app to close (it won't close Windows itself or Jarvis) |
-| "Forget everything" · "Goodbye" | Clears memory · quits |
-| Anything else | Asked to the local AI |
-
-Other ways to start it (from a terminal in this folder, after `.venv\Scripts\activate`):
-
-```
-python jarvis.py --text     # type instead of talk
-python jarvis.py --ptt      # press Enter, then talk (no wake word)
-python jarvis.py --no-ui    # console only
+```mermaid
+flowchart LR
+  A[🎤 Voice / typed input] --> B[Speech to text<br/>faster-whisper]
+  B --> C{Recognized command?}
+  C -->|Yes| D[Python command router]
+  C -->|No| E[Ollama + Gemma 4]
+  D --> F[Windows / browser action]
+  E --> G[Piper / Windows TTS]
+  F --> H[Jarvis dashboard]
+  G --> H
 ```
 
-## Make it yours
+The wake-word path starts with **openWakeWord**. The commands and conversational AI take different routes, and the HUD tracks events from the local Python server. For files and actual component boundaries, see [Architecture](docs/ARCHITECTURE.md).
 
-- **Shortcuts:** edit `commands.json` (created from `commands.example.json` by setup). Add a name under `apps`, `websites` or `folders`, then restart.
-- **Settings:** the top of `jarvis.py` has `USER_NAME`, `OLLAMA_MODEL` (try `gemma4:e4b` on a stronger PC), `WHISPER_MODEL`, `PIPER_VOICE` and `WAKE_THRESHOLD`.
-- **Look:** change the colors in the `:root` variables at the top of `ui.html`.
+## Quick start
 
-## Troubleshooting
+**Requirements:** Windows 10/11, Python 3.12 (or installer access via `winget`), a working microphone for voice mode, and internet during initial downloads. 16 GB RAM recommended; CPU-only operation is supported but may be slower. Disk space varies by model and downloads.
 
-- **"Didn't catch that":** Jarvis prints your loudest sound vs. the background level. If they're close, pick the right mic and raise its level in Windows **Settings → System → Sound → Input**.
-- **Wakes up by accident:** raise `WAKE_THRESHOLD` to 0.6–0.7.
-- **"Ollama isn't running":** open the Ollama app from the Start Menu, then start Jarvis again.
-- **Slow answers:** normal on CPU-only laptops. Try a smaller Whisper model (`tiny.en`) or an NVIDIA GPU.
+> [!CAUTION]
+> This automated setup is still awaiting independent Windows validation. **Review a downloaded script before executing it**, and do not blindly bypass SmartScreen or other operating-system warnings.
 
-## Security notes
+1. [Review the Windows setup guide](docs/INSTALL_WINDOWS.md) and [third-party licenses](THIRD_PARTY_NOTICES.md).
+2. Download the source ZIP only **after the first release is announced**, or clone this repository if you are a developer reviewing it.
+3. Inspect `setup.bat`, then run it on a **test Windows machine** to install the listed tools and models. The revised installer stops on detected failures rather than claiming success.
+4. Run `run_tests.bat` to exercise the mocked command/UI unit tests.
+5. After verifying setup, run `run_jarvis.bat` or choose a terminal mode:
 
-- The HUD server listens on `127.0.0.1` only. Command requests carry a per-run token plus Host/Origin checks; the event stream also requires its own per-run token and checks Host/Origin. These are defenses against other browser origins, not a guarantee against malicious programs already running on the same PC.
-- Apps are launched **without a shell**, and web addresses are validated, so spoken or typed text can't be turned into extra Windows commands.
-- Jarvis can open programs on your PC. Don't expose its port to a network, and review `commands.py` before adding new actions.
+```powershell
+.\.venv\Scripts\python.exe jarvis.py --text   # type instead of using a microphone
+.\.venv\Scripts\python.exe jarvis.py --ptt    # press Enter to speak
+.\.venv\Scripts\python.exe jarvis.py --no-ui  # console without dashboard
+```
 
-Run the tests (nothing is actually launched): double-click `run_tests.bat`, or run `python -m unittest discover tests`.
+**Want the details?** [Windows installation guide →](docs/INSTALL_WINDOWS.md)
 
-## Licenses
+## Personalize your assistant
 
-Jarvis's own code: **LICENSE NOT YET SELECTED.** No permission to reuse or redistribute the original source is granted by this private staging repository. Select a license deliberately before any public release.
-Third-party models and packages have their own licenses. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). In particular, the openWakeWord pretrained models are **non-commercial** (CC BY-NC-SA 4.0).
+The `commands.example.json` file is a starter template. Setup makes a personal `commands.json` copy; **that file is ignored by Git**.
+
+```json
+{
+  "browser": "chrome",
+  "apps": {"notes": "notepad"},
+  "websites": {"my portfolio": "https://example.com"},
+  "folders": {"projects": "C:\\Code"}
+}
+```
+
+Edit the names, apps, folders, and website addresses to suit your computer. Edit `USER_NAME`, `OLLAMA_MODEL`, and audio preferences near the top of `jarvis.py`. For colors, edit the CSS variables in `ui.html`. Never commit a personalized config or private file.
+
+## Project files
+
+```text
+jarvis.py              Python assistant, Ollama, audio and local HUD server
+commands.py            Windows, URL and shortcut command routing
+ui.html                Responsive HUD (HTML, CSS, JavaScript)
+commands.example.json  Safe starter preferences
+setup.bat               Windows-only setup with failure checks
+run_jarvis.bat          Start the assistant
+run_tests.bat           Run isolated tests
+requirements.txt       Python dependencies
+tests/                 Mocked command and local HTTP regression tests
+docs/                  Install, architecture, security and troubleshooting
+THIRD_PARTY_NOTICES.md Libraries, models and voice licensing
+RELEASE_READINESS.md   Outstanding publishing checks
+```
+
+## Testing and transparency
+
+Run `python -m unittest discover tests -v` after installing the necessary test dependencies. The suite **mocks** application launches and audio actions; it does not prove that Chrome opened, that wake-word recognition worked through a physical microphone, or that the model installed successfully. See the [release checklist](RELEASE_READINESS.md) for the real Windows validation still needed.
+
+**Local inference ≠ every action is offline.** Model inference is intended to run locally after downloading model weights; opening web pages and searching are online actions. A recorded HUD status message is not proof that a live network-disconnection test occurred.
+
+## Useful links
+
+[Windows setup](docs/INSTALL_WINDOWS.md) · [Architecture](docs/ARCHITECTURE.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [Security](docs/SECURITY.md) · [Third-party notices](THIRD_PARTY_NOTICES.md) · [Release checklist](RELEASE_READINESS.md) · [Contributing](CONTRIBUTING.md)
+
+## Credits and licensing
+
+Made by **[Tabitha Dev](https://code.tabitha.dev)** · [GitHub](https://github.com/tabitha-dev) · [YouTube tutorials](https://www.youtube.com/@tabitha-dev)
+
+**Project code license:** *not yet selected*. No general reuse or redistribution permission is asserted until the creator chooses a license and publishes it. Model weights, voices and dependencies belong to their respective owners and follow their **separate** licenses; see [Third-party notices](THIRD_PARTY_NOTICES.md). OpenWakeWord's pretrained models may carry noncommercial limits. No Marvel artwork, voice or footage is distributed, and this project is not affiliated with Marvel or Disney.
+
+<div align="center">
+
+**Software Engineering, Made Simple.**
+
+*Learn it. Run it. Understand it.*
+
+</div>

@@ -1,14 +1,27 @@
-# Release readiness — private staging (NOT PUBLIC)
+# Release readiness
 
-Before making this repository public or putting a download link in YouTube:
+**Current status: PRIVATE, PRE-RELEASE, NO PUBLIC DOWNLOAD.**
 
-- [ ] Choose, verify rights to use, and add a project license. No license has been selected.
-- [ ] Verify redistribution/commercial use terms for all pretrained models and Piper voice assets; do not bundle third-party model weights.
-- [ ] Perform an independent clean Windows 10/11 setup test, including reboots, winget downloads, checks on failures, voice input/output and local model installation.
-- [ ] Review Windows command allow-lists and app-launch behavior, and review local HTTP API threat model, including `/events`, `/say`, `/talk`, DNS rebinding, and local processes.
-- [ ] Run unit tests in a real Windows environment with installed dependencies (mocked audio tests alone aren't an integration test).
-- [ ] Confirm config contains no personal paths, API credentials, cookies or private files. Do not commit `commands.json`, `.venv`, voice files or model weights.
-- [ ] Review YouTube visuals: real footage vs permanently labeled simulated install; never claim Wi-Fi-off demo or fresh Windows validation not actually recorded.
-- [ ] Obtain creator approval to change repository visibility, publish download links and create a GitHub release.
+## Code and quality gates
 
-Current automatic tests do not demonstrate real microphone, audio output, or fresh-install functionality. This repo remains private and no GitHub release exists.
+- [x] Remove personal `commands.json`, virtual environments, model binaries and recordings from tracked source.
+- [x] Add loopback endpoint token, Host and Origin checks, including `/events`, and regression tests.
+- [x] Provide clear setup and safety documentation with authentic interface imagery.
+- [x] Provide an explicit source-only package checker (no automatic publishing).
+- [ ] Observe a green Windows GitHub Actions test run using installed test dependencies.
+- [ ] Perform an **independent clean Windows 10/11 setup** with a working microphone, output speaker and actual model downloads.
+- [ ] Review Windows command allowlists, local HTTP routes and setup scripts on a real PC.
+
+## Licensing and publication gates
+
+- [ ] Creator selects project source license and confirms rights (e.g., MIT or Apache-2.0, if appropriate). Do not assume one.
+- [ ] Validate pretrained wake-word models and Piper voice license implications, particularly noncommercial model restrictions.
+- [ ] Create release notes and a verified source ZIP after clean-install testing.
+- [ ] Explicitly approve changing repository visibility to Public and distributing code.
+- [ ] Update the YouTube description only after the release URL actually works when signed out.
+
+## Evidence boundary
+
+A passing command/unit-test suite is **not proof** of a working Windows microphone, downloaded model, wake-word listener, complete offline operation or safe public deployment. The install sequence shown in the associated video is an explicitly **simulated walkthrough**; the real Jarvis interaction clip is separately identified.
+
+[← README](README.md) · [Windows setup](docs/INSTALL_WINDOWS.md)
