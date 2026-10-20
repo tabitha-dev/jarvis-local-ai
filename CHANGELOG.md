@@ -1,5 +1,12 @@
 # Changelog
 
+## Pre-release fixes | October 2026
+- Windows batch files now use CRLF line endings, enforced by `.gitattributes` (LF-only `.bat` files can make `cmd.exe` miss `goto`/`call` labels).
+- `run_jarvis.bat`, `run_tests.bat` and `make_release.bat` pause before exiting, so double-click users can read errors.
+- `setup.bat` prefers `requirements.lock.txt` when present. `update_lock.bat` can generate it from a verified Windows environment; **no tested lock file has been supplied yet**.
+- `.gitignore` excludes `*.zip` so release archives aren't committed by accident.
+- README: real demo GIF and a 3-step Quick start; CONTRIBUTING now matches the MIT license.
+
 ## Private release candidate | October 2026
 
 ### Voice interaction and visual feedback

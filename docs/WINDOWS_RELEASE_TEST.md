@@ -16,6 +16,7 @@
 - [ ] Start with a new Windows 10 or 11 environment with no preinstalled Python/Ollama/Jarvis state; confirm `winget` works.
 - [ ] Download or clone the **private** candidate source and inspect `setup.bat` yourself. Never bypass SmartScreen blindly.
 - [ ] Run `setup.bat`. Confirm each of the six numbered stages completes, and simulate/observe a failure so the script exits non-zero without a false success message.
+- [ ] From a verified Windows environment, run `update_lock.bat`, review `requirements.lock.txt` for reproducible versions and sensitive local paths, commit the lock file, and repeat a clean install using it.
 - [ ] Verify `ollama list` includes the configured Gemma model, and the Piper, Whisper and wake-word assets exist.
 - [ ] Run `run_tests.bat` with real Python dependencies; record the final reported test count and result.
 - [ ] Run `python jarvis.py --text` and ask a simple question; confirm the local model replies.

@@ -35,3 +35,9 @@ Thumbs.db
 desktop.ini
 .vscode/
 .idea/
+
+# Release archives (attach to GitHub Releases, never commit)
+*.zip
+
+# Interrupted lock-file generation (real lock remains trackable)
+requirements.lock.tmp

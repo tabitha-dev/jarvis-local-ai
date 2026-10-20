@@ -20,6 +20,10 @@
 
 Each step now includes failure detection. The setup script returns a failure instead of reporting that an incomplete install succeeded. Windows/macOS/Linux behaviors are not interchangeable; this project currently targets Windows.
 
+## Dependency versions
+
+`requirements.txt` lists the packages needed for a development installation. The installer will prefer `requirements.lock.txt` when the maintainer has generated and committed one from a **verified working Windows installation**. No such lock file has been provided yet; an install without it can resolve different package versions over time. On the known-working PC, run `update_lock.bat` after confirming the app and tests work, review `requirements.lock.txt`, then test it on a separate clean Windows environment before a public release.
+
 ## Steps
 
 1. Download source (when a release is available) or clone this repository for testing.

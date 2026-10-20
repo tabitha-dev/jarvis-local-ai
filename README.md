@@ -12,16 +12,24 @@
 [![Stage](https://img.shields.io/badge/Status-Pre--release-F2B84B)](RELEASE_READINESS.md)
 [![Source tests](https://github.com/tabitha-dev/jarvis-local-ai/actions/workflows/quality.yml/badge.svg)](https://github.com/tabitha-dev/jarvis-local-ai/actions/workflows/quality.yml)
 
-**[Get started](#quick-start)** · **[Explore features](#what-can-jarvis-do)** · **[Understand the architecture](#how-it-works)** · **[Security](docs/SECURITY.md)** · **[Tabitha Dev on YouTube](https://www.youtube.com/@tabitha-dev)**
+**[Get started](#quick-start-3-steps)** · **[Explore features](#what-can-jarvis-do)** · **[Understand the architecture](#how-it-works)** · **[Security](docs/SECURITY.md)** · **[Tabitha Dev on YouTube](https://www.youtube.com/@tabitha-dev)**
 
-<img src="assets/jarvis-real-hud.jpg" alt="Real Windows screen recording of the custom Jarvis dashboard showing its amber processing state" width="840" />
+<img src="assets/jarvis-demo.gif" alt="Real screen recording: Jarvis answers 'what time is it right now?' instantly, then thinks in amber before answering a flexbox question with the local AI" width="720" />
 
-<sub>Actual cropped frame from the creator's running Windows Jarvis interface. Not a simulated installation or proof of a disconnected-network test.</sub>
+<sub>Real screen recording from the creator's Windows PC. Simple commands answer instantly; real questions go to the local AI (amber). The AI wait is shown 4× faster; the clip is for demonstration, not proof of a fresh install.</sub>
 
 </div>
 
 > [!IMPORTANT]
-> **Private development preview. No public release yet.** The source and tests are under review. A complete clean-Windows installation, live microphone test and third-party model/license review are still required. Please read [Release readiness](RELEASE_READINESS.md) before installing or distributing. The repository is currently private.
+> **Private development preview, not a public download.** The three steps below are for authorized testers on a spare/test Windows PC only. A fresh Windows install, microphone, and third-party licensing still need verification. Read the scripts before running them and **do not blindly bypass SmartScreen**. [Release status](RELEASE_READINESS.md).
+
+## Quick start (3 steps)
+
+1. **Download:** if you have access to this private repository, click **Code → Download ZIP** and extract it to a folder. Public downloads are **not available yet**.
+2. **Set up and check:** read `setup.bat` and the [Windows installation guide](docs/INSTALL_WINDOWS.md), then run `setup.bat` on a **test PC**. The first run needs internet and may download several GB. Run `run_tests.bat` when setup finishes.
+3. **Run Jarvis:** launch `run_jarvis.bat`, then type a question in the HUD or use a microphone. [Troubleshooting](docs/TROUBLESHOOTING.md) is available if something doesn't start.
+
+**Dependency note:** `requirements.txt` is a readable, unpinned list until `requirements.lock.txt` is generated on a working Windows setup. `setup.bat` prefers the lock file once it exists. Maintainers should run `update_lock.bat`, review and commit the resulting lock file **after** a successful real-Windows test; do not guess package versions.
 
 ## Why I built this
 
@@ -68,7 +76,7 @@ flowchart LR
 
 The wake-word path starts with **openWakeWord**. The commands and conversational AI take different routes, and the HUD tracks events from the local Python server. For files and actual component boundaries, see [Architecture](docs/ARCHITECTURE.md).
 
-## Quick start
+## Detailed setup
 
 **Requirements:** Windows 10/11, Python 3.12 (or installer access via `winget`), a working microphone for voice mode, and internet during initial downloads. 16 GB RAM recommended; CPU-only operation is supported but may be slower. Disk space varies by model and downloads.
 
@@ -76,7 +84,7 @@ The wake-word path starts with **openWakeWord**. The commands and conversational
 > This automated setup is still awaiting independent Windows validation. **Review a downloaded script before executing it**, and do not blindly bypass SmartScreen or other operating-system warnings.
 
 1. [Review the Windows setup guide](docs/INSTALL_WINDOWS.md) and [third-party licenses](THIRD_PARTY_NOTICES.md).
-2. Download the source ZIP only **after the first release is announced**, or clone this repository if you are a developer reviewing it.
+2. If you are an authorized tester, clone this private repository or download its source ZIP. Public downloads will be available only after approval and a verified release.
 3. Inspect `setup.bat`, then run it on a **test Windows machine** to install the listed tools and models. The revised installer stops on detected failures rather than claiming success.
 4. Run `run_tests.bat` to exercise the mocked command/UI unit tests.
 5. After verifying setup, run `run_jarvis.bat` or choose a terminal mode:
@@ -114,7 +122,8 @@ commands.example.json  Safe starter preferences
 setup.bat               Windows-only setup with failure checks
 run_jarvis.bat          Start the assistant
 run_tests.bat           Run isolated tests
-requirements.txt       Python dependencies
+update_lock.bat         Generate a reviewed lock file from the working Windows environment
+requirements.txt       Readable dependency list; lock file is pending a verified Windows environment
 tests/                 Mocked command and local HTTP regression tests
 docs/                  Install, architecture, security and troubleshooting
 THIRD_PARTY_NOTICES.md Libraries, models and voice licensing
