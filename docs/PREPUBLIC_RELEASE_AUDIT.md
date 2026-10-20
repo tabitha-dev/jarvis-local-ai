@@ -4,7 +4,7 @@
 
 ## Verified remotely
 
-- **Latest CI:** 56 of 56 isolated checks PASS on Windows Server 2025 and Ubuntu 24.04, Python 3.12 (47 prior functional/unit checks, six listen-mode checks and three release-hygiene checks), [run 39502432199](https://github.com/tabitha-dev/jarvis-local-ai/actions/runs/39502432199).
+- **Latest CI:** 61 of 61 isolated checks PASS on Windows Server 2025 and Ubuntu 24.04, Python 3.12 (47 prior functional/unit checks, 11 listening/voice checks and three release-hygiene checks), [run 39502432199](https://github.com/tabitha-dev/jarvis-local-ai/actions/runs/39518410655).
 - **Source repository:** `main` currently has a project-authored MIT license, README, third-party notices, security guidance, voice chooser (Windows default / optional Cori), pre-release installer and source-only packaging allowlist.
 - **Local HTTP protections:** token, origin and host checks are implemented and tested at source level. No formal penetration test has been performed.
 - **Source hygiene:** private `commands.json`, virtual environments, models and media are absent from the reviewed tracked file tree. GitHub Actions additionally checks for accidentally tracked private/config/media files; this is not a full secret-history or binary forensics scan.
