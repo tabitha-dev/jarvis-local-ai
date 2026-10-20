@@ -47,7 +47,8 @@ OLLAMA_URL = "http://localhost:11434/api/chat"
 WHISPER_MODEL = "base.en"          # "tiny.en" = faster, "small.en" = more accurate
 WHISPER_DEVICE = "cpu"             # "cuda" if you have an NVIDIA GPU set up
 
-PIPER_VOICE = "en_GB-alan-medium"  # British "butler" voice. Try "en_US-ryan-high" too.
+PIPER_VOICE = "en_GB-alan-medium"  # Rights unclear; do not use commercially without permission. See docs/LICENSE_REVIEW.md.
+# Cori has public-domain training data; verify model rights and change setup.bat to match.
 VOICES_DIR = Path(__file__).parent / "voices"
 
 WAKE_THRESHOLD = 0.5               # raise to 0.6-0.7 if it wakes up by accident

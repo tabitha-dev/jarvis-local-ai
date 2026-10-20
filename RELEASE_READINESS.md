@@ -16,7 +16,8 @@
 ## Licensing and publication gates
 
 - [x] Owner-provided release notes requested **MIT** for original project code; MIT `LICENSE` added. Third-party models and voices are **not** included in this grant.
-- [ ] Validate pretrained wake-word models and Piper voice license implications, particularly noncommercial model restrictions.
+- [x] Third-party license review completed 2026-10-19: [docs/LICENSE_REVIEW.md](docs/LICENSE_REVIEW.md). Not legal advice.
+- [ ] Owner decisions from that review: default voice (`alan` rights unclear; `cori` uses public-domain source recordings but model/output rights require review), wake-word use in monetized videos, source-only distribution.
 - [ ] Create release notes and a verified source ZIP after clean-install testing.
 - [ ] Explicitly approve changing repository visibility to Public and distributing code.
 - [ ] Update the YouTube description only after the release URL actually works when signed out.

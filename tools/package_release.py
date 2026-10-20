@@ -17,7 +17,8 @@ FILES = (
     'tests/test_commands.py', 'tests/test_ui_security.py', 'tests/test_states.py',
     'docs/ARCHITECTURE.md', 'docs/INSTALL_WINDOWS.md',
     'docs/TROUBLESHOOTING.md', 'docs/SECURITY.md', 'docs/WINDOWS_RELEASE_TEST.md',
-    'tools/package_release.py',
+    'tools/package_release.py', 'tools/windows_test_report.bat',
+    'docs/LICENSE_REVIEW.md',
     'assets/jarvis-real-hud.jpg',
 )
 OPTIONAL_FILES = ('requirements.lock.txt', 'assets/jarvis-demo.gif')

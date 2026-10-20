@@ -1,6 +1,8 @@
 # Changelog
 
 ## Pre-release fixes | October 2026
+- Third-party license review ([docs/LICENSE_REVIEW.md](docs/LICENSE_REVIEW.md)): the default `alan` voice has no verified open grant; `cori` is documented as an alternative with public-domain source recordings, subject to model-rights verification.
+- `tools\windows_test_report.bat` collects a minimal local-only version/status report without raw paths or audio-device names for the fresh Windows install test; the test guide explains how to get a clean environment.
 - Windows batch files now use CRLF line endings, enforced by `.gitattributes` (LF-only `.bat` files can make `cmd.exe` miss `goto`/`call` labels).
 - `run_jarvis.bat`, `run_tests.bat` and `make_release.bat` pause before exiting, so double-click users can read errors.
 - `setup.bat` prefers `requirements.lock.txt` when present. `update_lock.bat` can generate it from a verified Windows environment; **no tested lock file has been supplied yet**.
