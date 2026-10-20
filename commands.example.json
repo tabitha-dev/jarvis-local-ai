@@ -10,5 +10,7 @@
   },
   "folders": {
     "projects": "C:\\Code"
-  }
+  },
+  "voice": "windows",
+  "_voice_help": "Voice is chosen by setup.bat or change_voice.bat: windows (default) or piper:en_GB-cori-medium. Do not enter arbitrary model names."
 }

@@ -1,5 +1,10 @@
 # Changelog
 
+## Voice preference and beginner setup | October 2026
+- Stage 4 of setup now shows a strict numbered voice menu: Windows built-in (default, no download) or optional Piper Cori, with unattended/Enter default to Windows.
+- Voice choice is saved atomically in the user-only Git-ignored `commands.json` rather than requiring edits to `jarvis.py`. A missing/broken Cori voice falls back to Windows.
+- `change_voice.bat` changes the saved setting later; Alan is excluded from the public menu.
+
 ## Pre-release fixes | October 2026
 - Third-party license review ([docs/LICENSE_REVIEW.md](docs/LICENSE_REVIEW.md)): the default `alan` voice has no verified open grant; `cori` is documented as an alternative with public-domain source recordings, subject to model-rights verification.
 - `tools\windows_test_report.bat` collects a minimal local-only version/status report without raw paths or audio-device names for the fresh Windows install test; the test guide explains how to get a clean environment.

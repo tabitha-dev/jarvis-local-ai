@@ -4,8 +4,8 @@ Jarvis - an offline voice assistant for Windows.
   Wake word  : "Hey Jarvis"   (openWakeWord, runs locally)
   Ears       : faster-whisper (speech-to-text, runs locally)
   Brain      : Ollama         (local AI model, no tokens, no internet)
-  Voice      : Piper          (text-to-speech, runs locally)
-               falls back to the built-in Windows voice if Piper isn't set up
+  Voice      : Windows by default, or user-selected Piper Cori (optional)
+               falls back to Windows if the selected Piper voice is unavailable
 
 Run:
   python jarvis.py            -> say "Hey Jarvis", then talk
@@ -47,8 +47,9 @@ OLLAMA_URL = "http://localhost:11434/api/chat"
 WHISPER_MODEL = "base.en"          # "tiny.en" = faster, "small.en" = more accurate
 WHISPER_DEVICE = "cpu"             # "cuda" if you have an NVIDIA GPU set up
 
-PIPER_VOICE = "en_GB-alan-medium"  # Rights unclear; do not use commercially without permission. See docs/LICENSE_REVIEW.md.
-# Cori has public-domain training data; verify model rights and change setup.bat to match.
+from voice_settings import get_voice, VOICE_MODELS
+# Voice selection comes from the gitignored commands.json, never from code edits.
+# Public allowlist: Windows or optional Piper Cori only. No Alan downloads.
 VOICES_DIR = Path(__file__).parent / "voices"
 
 WAKE_THRESHOLD = 0.5               # raise to 0.6-0.7 if it wakes up by accident
@@ -204,15 +205,18 @@ class Voice:
     def __init__(self):
         self.piper = None
         self.fallback = None
-        model_path = VOICES_DIR / f"{PIPER_VOICE}.onnx"
-        try:
-            from piper import PiperVoice
-            if model_path.exists():
-                self.piper = PiperVoice.load(str(model_path))
-            else:
-                print(f"  (Piper voice not found at {model_path}; using the Windows voice)")
-        except Exception as e:
-            print(f"  (Piper unavailable: {e}; using the Windows voice)")
+        selection = get_voice()
+        model_name = VOICE_MODELS[selection]  # strictly validated; unknown => Windows
+        if model_name is not None:
+            model_path = VOICES_DIR / f"{model_name}.onnx"
+            try:
+                from piper import PiperVoice
+                if model_path.is_file():
+                    self.piper = PiperVoice.load(str(model_path))
+                else:
+                    print("  (Selected Piper voice file missing; using the Windows voice)")
+            except Exception as e:
+                print(f"  (Selected Piper voice unavailable: {e}; using the Windows voice)")
         if self.piper is None:
             import pyttsx3
             self.fallback = pyttsx3.init()

@@ -24,6 +24,15 @@ Each step now includes failure detection. The setup script returns a failure ins
 
 `requirements.txt` lists the packages needed for a development installation. The installer will prefer `requirements.lock.txt` when the maintainer has generated and committed one from a **verified working Windows installation**. No such lock file has been provided yet; an install without it can resolve different package versions over time. On the known-working PC, run `update_lock.bat` after confirming the app and tests work, review `requirements.lock.txt`, then test it on a separate clean Windows environment before a public release.
 
+## Choose your voice
+
+During Stage 4, the **numbered menu** offers:
+
+- **1 — Windows built-in voice (default):** no separate voice model download. Press **Enter**, choose 1, or wait 25 seconds to choose this automatically.
+- **2 — Cori:** optional British female Piper voice (`en_GB-cori-medium`), trained with public-domain source recordings. Review the model/output usage terms in [license review](LICENSE_REVIEW.md) before commercial use.
+
+The selection is stored as `"voice": "windows"` or `"voice": "piper:en_GB-cori-medium"` in your *private* Git-ignored `commands.json`, not `jarvis.py`. Only those choices are accepted; there is no arbitrary voice-name input. If the Cori download fails, setup reports a failure and does not overwrite your prior choice. If the chosen model is missing or cannot load later, Jarvis falls back to Windows text-to-speech. To switch later, run `change_voice.bat` and restart Jarvis. **Alan is not part of the public menu.**
+
 ## Steps
 
 1. Download source (when a release is available) or clone this repository for testing.
