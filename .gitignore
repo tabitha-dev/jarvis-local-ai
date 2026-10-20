@@ -1,0 +1,17 @@
+# Local install - never commit these
+.venv/
+__pycache__/
+*.pyc
+voices/
+*.onnx
+*.onnx.json
+*.tflite
+
+# Personal config (commit commands.example.json instead)
+commands.json
+
+# OS / editor
+Thumbs.db
+desktop.ini
+.vscode/
+*.log
