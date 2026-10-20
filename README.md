@@ -27,11 +27,11 @@
 
 1. **Download:** if you have access to this private repository, click **Code → Download ZIP** and extract it to a folder. Public downloads are **not available yet**.
 2. **Set up and check:** read `setup.bat` and the [Windows installation guide](docs/INSTALL_WINDOWS.md), then run `setup.bat` on a **test PC**. The first run needs internet and may download several GB. Choose your voice from the numbered menu (Windows is the safe default). Run `run_tests.bat` when setup finishes.
-3. **Run Jarvis:** launch `run_jarvis.bat`, then type a question in the HUD or use a microphone. [Troubleshooting](docs/TROUBLESHOOTING.md) is available if something doesn't start.
+3. **Run Jarvis:** launch `run_jarvis.bat`, wait to hear **“Jarvis online”**, then say **“Jarvis, what time is it?”** or click TALK/type in the HUD. Test **“Jarvis, open Notepad”** and **“Jarvis, explain flexbox”** next. [Troubleshooting](docs/TROUBLESHOOTING.md) is available if something doesn't start.
 
 **Your voice, your choice:** Setup offers **1. Windows voice** (default; no additional voice download) or **2. Cori** (optional British female Piper voice with public-domain training recordings; verify model and output rights). Press **Enter** or leave setup unattended to use the Windows voice. Your choice is saved to the private, Git-ignored `commands.json`. To change it later, run `change_voice.bat` and restart Jarvis. Alan is not offered in the public release; see [voice licensing](docs/LICENSE_REVIEW.md).
 
-**Pre-public release gate:** Before making this repository public, complete the [release readiness checklist](RELEASE_READINESS.md) and [pre-public audit](docs/PREPUBLIC_RELEASE_AUDIT.md). The pretrained `hey_jarvis` wake-word model has a **noncommercial license**. The default startup now uses the HUD's TALK button and does not load the restricted model. Opt in only with `--wake` and follow its usage terms. A passing GitHub Actions run does not replace a fresh Windows installation and actual audio-device test.
+**Pre-public release gate:** Before making this repository public, complete the [release readiness checklist](RELEASE_READINESS.md) and [pre-public audit](docs/PREPUBLIC_RELEASE_AUDIT.md). The pretrained `hey_jarvis` wake-word model has a **noncommercial license**. Ordinary startup now listens for **“Jarvis, …”** using the existing local Whisper speech recognizer. It does **not** load the restricted pretrained wake-word model. TALK, typing, and `--button-only` remain available; the noncommercial model is opt-in via `--wake` only. A passing GitHub Actions run does not replace a fresh Windows installation and actual audio-device test.
 
 **Dependency note:** `requirements.txt` is a readable, unpinned list until `requirements.lock.txt` is generated on a working Windows setup. `setup.bat` prefers the lock file once it exists. Maintainers should run `update_lock.bat`, review and commit the resulting lock file **after** a successful real-Windows test; do not guess package versions.
 
@@ -43,7 +43,7 @@ I wanted a computer assistant that felt personal and practical: say what you nee
 
 | Feature | How it works |
 | :-- | :-- |
-| 🎙️ **Voice and typing** | Click **TALK** in the HUD (default), press Enter with `--ptt`, or type directly. Optional wake-word mode is available with `--wake`. |
+| 🎙️ **Voice and typing** | Say **“Jarvis, …”** hands-free using local Whisper (default), click TALK, press Enter with `--ptt`, or type directly. Optional pretrained wake word is still available via `--wake` with noncommercial restrictions. |
 | 🧠 **Local AI responses** | Ollama runs the configured Gemma model on your computer after downloading it. No cloud AI API key required. |
 | 🖥️ **Windows actions** | Open installed apps, approved shortcuts and folders; control volume and playback. |
 | 🌐 **Browser shortcuts** | Open websites and start searches. **These activities need internet access.** |
@@ -78,7 +78,14 @@ flowchart LR
   G --> H
 ```
 
-Default voice input starts when you click **TALK**. The optional wake-word mode uses **openWakeWord**. The commands and conversational AI take different routes, and the HUD tracks events from the local Python server. For files and actual component boundaries, see [Architecture](docs/ARCHITECTURE.md).
+Default hands-free voice input detects **“Jarvis, …”** by transcribing detected phrases with local **faster-whisper** and only accepting start-of-phrase invocations. Its mic sensitivity may vary by device. The optional `--wake` mode uses **openWakeWord**. The commands and conversational AI take different routes, and the HUD tracks events from the local Python server. For files and actual component boundaries, see [Architecture](docs/ARCHITECTURE.md).
+
+
+### First-run voice checks
+
+After setup, listen for **“Jarvis online.”** Say **“Jarvis, what time is it?”**, **“Hi Jarvis, open Notepad”**, and **“Hello Jarvis, explain flexbox.”** The default name listener uses Whisper rather than downloading a restricted wake-word model. To turn name listening off, run `run_jarvis.bat --button-only`. If Jarvis shows replies but makes no sound, check the Windows default output device and SAPI voice settings; see [voice troubleshooting](docs/VOICES.md) and [troubleshooting](docs/TROUBLESHOOTING.md).
+
+**Testing boundary:** A working Windows 11 installation on the creator's computer has been reported, with audible responses, name invocation and app opening. This does not establish a new-machine install with no preinstalled Python, Ollama, models, or audio drivers. The [independent release checklist](docs/WINDOWS_RELEASE_TEST.md) remains open until verified.
 
 ## Detailed setup
 
@@ -103,7 +110,7 @@ Default voice input starts when you click **TALK**. The optional wake-word mode 
 
 Use the built-in Windows voice by default; optionally choose Cori during setup. See [Choosing Jarvis's voice](docs/VOICES.md). Cori's public-domain training recordings alone do not establish every model/output right.
 
-**The wake word is off by default.** The ordinary `run_jarvis.bat` launch listens for the HUD's TALK button. To opt in to the pretrained `hey_jarvis` wake word, run `run_jarvis.bat --wake`. This may download an openWakeWord model licensed **CC BY-NC-SA 4.0 (noncommercial)** and is not appropriate for commercial use without the necessary permission. Do not treat it as commercially cleared.
+**The restricted pretrained wake-word model is off by default.** The ordinary `run_jarvis.bat` launch listens for “Jarvis, …” through Whisper, while the HUD's TALK button and typing remain available. To opt in to the pretrained `hey_jarvis` wake word, run `run_jarvis.bat --wake`. This may download an openWakeWord model licensed **CC BY-NC-SA 4.0 (noncommercial)** and is not appropriate for commercial use without the necessary permission. Do not treat it as commercially cleared.
 
 **Want the details?** [Windows installation guide →](docs/INSTALL_WINDOWS.md) · [Fresh-PC verification checklist →](docs/WINDOWS_RELEASE_TEST.md)
 
