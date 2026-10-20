@@ -610,7 +610,7 @@ RESET_WORDS = {"forget everything", "new conversation", "start over"}
 def phrase(text):
     """'Hey Jarvis, goodbye!' -> 'goodbye' (so 'how do I say goodbye in French' does NOT quit)."""
     t = re.sub(r"[^\w\s']", " ", text.lower())
-    t = re.sub(r"^\s*(hey|ok|okay)?\s*(jarvis)?\s*", "", t)
+    t = re.sub(r"^\s*(hey|hi|hello|ok|okay|yo)?\s*(jarvis)?\s*", "", t)
     return re.sub(r"\s+", " ", t).strip()
 
 
