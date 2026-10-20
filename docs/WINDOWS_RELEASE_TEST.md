@@ -37,7 +37,7 @@ In the clean environment:
 - [ ] Run `python jarvis.py --text` and ask a simple question; confirm the local model replies.
 - [ ] Run `run_jarvis.bat`; confirm the HUD opens without exposing a LAN port.
 - [ ] Type “what time is it?” in the HUD and confirm the response.
-- [ ] Test the HUD TALK button, push-to-talk, and speaker playback. Optional `--wake` uses a separate noncommercial model and must not be assumed part of the default install.
+- [ ] Test hands-free “Jarvis, …” in a quiet and moderately noisy room, the HUD TALK button, push-to-talk, and speaker playback. Confirm Hello/Hi/Hey variants and that unrelated conversation does not activate commands. Optional `--wake` uses a separate noncommercial model and must not be assumed part of the default install.
 - [ ] Use a **safe example** such as “open Notepad”; check that the expected application actually opens, and test URL and volume commands.
 - [ ] Test controlled loss of network **after** downloads: local inference vs browser actions are documented correctly. Do not claim an offline test if not performed.
 - [ ] Confirm regular user permissions are sufficient or document any prompts and limitations.
