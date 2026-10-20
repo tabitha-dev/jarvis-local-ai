@@ -41,3 +41,6 @@ desktop.ini
 
 # Interrupted lock-file generation (real lock remains trackable)
 requirements.lock.tmp
+
+# Local Windows test report (may contain device names)
+windows-test-report.txt
