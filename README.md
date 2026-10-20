@@ -31,7 +31,7 @@
 
 **Your voice, your choice:** Setup offers **1. Windows voice** (default; no additional voice download) or **2. Cori** (optional British female Piper voice with public-domain training recordings; verify model and output rights). Press **Enter** or leave setup unattended to use the Windows voice. Your choice is saved to the private, Git-ignored `commands.json`. To change it later, run `change_voice.bat` and restart Jarvis. Alan is not offered in the public release; see [voice licensing](docs/LICENSE_REVIEW.md).
 
-**Pre-public release gate:** Before making this repository public, complete the [release readiness checklist](RELEASE_READINESS.md) and [pre-public audit](docs/PREPUBLIC_RELEASE_AUDIT.md). The current default startup loads the pretrained `hey_jarvis` wake-word model, which has a **noncommercial license**; it must not be silently represented as commercially cleared. A passing GitHub Actions run does not replace a fresh Windows installation and actual audio-device test.
+**Pre-public release gate:** Before making this repository public, complete the [release readiness checklist](RELEASE_READINESS.md) and [pre-public audit](docs/PREPUBLIC_RELEASE_AUDIT.md). The pretrained `hey_jarvis` wake-word model has a **noncommercial license**. The default startup now uses the HUD's TALK button and does not load the restricted model. Opt in only with `--wake` and follow its usage terms. A passing GitHub Actions run does not replace a fresh Windows installation and actual audio-device test.
 
 **Dependency note:** `requirements.txt` is a readable, unpinned list until `requirements.lock.txt` is generated on a working Windows setup. `setup.bat` prefers the lock file once it exists. Maintainers should run `update_lock.bat`, review and commit the resulting lock file **after** a successful real-Windows test; do not guess package versions.
 
@@ -43,7 +43,7 @@ I wanted a computer assistant that felt personal and practical: say what you nee
 
 | Feature | How it works |
 | :-- | :-- |
-| 🎙️ **Voice and typing** | Wake word, push-to-talk, or type directly in the HUD. |
+| 🎙️ **Voice and typing** | Click **TALK** in the HUD (default), press Enter with `--ptt`, or type directly. Optional wake-word mode is available with `--wake`. |
 | 🧠 **Local AI responses** | Ollama runs the configured Gemma model on your computer after downloading it. No cloud AI API key required. |
 | 🖥️ **Windows actions** | Open installed apps, approved shortcuts and folders; control volume and playback. |
 | 🌐 **Browser shortcuts** | Open websites and start searches. **These activities need internet access.** |
@@ -53,7 +53,7 @@ I wanted a computer assistant that felt personal and practical: say what you nee
 ### A few example commands
 
 ```text
-"Hey Jarvis, what time is it right now?"
+"What time is it right now?"
 "Open Chrome"
 "Open YouTube"
 "Open Chrome and YouTube"
@@ -78,7 +78,7 @@ flowchart LR
   G --> H
 ```
 
-The wake-word path starts with **openWakeWord**. The commands and conversational AI take different routes, and the HUD tracks events from the local Python server. For files and actual component boundaries, see [Architecture](docs/ARCHITECTURE.md).
+Default voice input starts when you click **TALK**. The optional wake-word mode uses **openWakeWord**. The commands and conversational AI take different routes, and the HUD tracks events from the local Python server. For files and actual component boundaries, see [Architecture](docs/ARCHITECTURE.md).
 
 ## Detailed setup
 
@@ -90,7 +90,7 @@ The wake-word path starts with **openWakeWord**. The commands and conversational
 1. [Review the Windows setup guide](docs/INSTALL_WINDOWS.md) and [third-party licenses](THIRD_PARTY_NOTICES.md).
 2. If you are an authorized tester, clone this private repository or download its source ZIP. Public downloads will be available only after approval and a verified release.
 3. Inspect `setup.bat`, then run it on a **test Windows machine** to install the listed tools and models. The revised installer stops on detected failures rather than claiming success.
-4. Run `run_tests.bat` to exercise the mocked command/UI unit tests.
+4. Run `run_tests.bat` to exercise the mocked command/UI unit tests and opt-in wake-word safeguards.
 5. After verifying setup, run `run_jarvis.bat` or choose a terminal mode:
 
 ```powershell
@@ -98,6 +98,12 @@ The wake-word path starts with **openWakeWord**. The commands and conversational
 .\.venv\Scripts\python.exe jarvis.py --ptt    # press Enter to speak
 .\.venv\Scripts\python.exe jarvis.py --no-ui  # console without dashboard
 ```
+
+### Voices and optional wake word
+
+Use the built-in Windows voice by default; optionally choose Cori during setup. See [Choosing Jarvis's voice](docs/VOICES.md). Cori's public-domain training recordings alone do not establish every model/output right.
+
+**The wake word is off by default.** The ordinary `run_jarvis.bat` launch listens for the HUD's TALK button. To opt in to the pretrained `hey_jarvis` wake word, run `run_jarvis.bat --wake`. This may download an openWakeWord model licensed **CC BY-NC-SA 4.0 (noncommercial)** and is not appropriate for commercial use without the necessary permission. Do not treat it as commercially cleared.
 
 **Want the details?** [Windows installation guide →](docs/INSTALL_WINDOWS.md) · [Fresh-PC verification checklist →](docs/WINDOWS_RELEASE_TEST.md)
 
@@ -139,7 +145,7 @@ RELEASE_READINESS.md   Outstanding publishing checks
 
 ## Testing and transparency
 
-The code-level suite is configured for Windows and Ubuntu GitHub-hosted runners with test dependencies installed. The current development candidate has **50 passing isolated checks on Windows Server 2025 and Ubuntu 24.04** ([verified CI run](https://github.com/tabitha-dev/jarvis-local-ai/actions/runs/39484914326)): 47 mocked functional/unit tests and three tracked-file/release-hygiene tests, covering commands, HUD states, local HTTP authorization, voice selection and fallback, and release safeguards; see [GitHub Actions](https://github.com/tabitha-dev/jarvis-local-ai/actions) for the latest run result. Run `python -m unittest discover tests -v` after installing the necessary test dependencies. The suite **mocks** application launches and audio actions; it does not prove that Chrome opened, that wake-word recognition worked through a physical microphone, or that the model installed successfully. See the [release checklist](RELEASE_READINESS.md) for the real Windows validation still needed.
+The code-level suite is configured for Windows and Ubuntu GitHub-hosted runners with test dependencies installed. The current private candidate has **56 passing isolated tests on Windows Server 2025 and Ubuntu 24.04** ([verified CI run](https://github.com/tabitha-dev/jarvis-local-ai/actions/runs/39502432199)): 47 prior functional/unit checks, six new opt-in wake-word checks, and three tracked-file/release-hygiene checks, covering commands, HUD states, local HTTP authorization, voice selection and fallback, and release safeguards; see [GitHub Actions](https://github.com/tabitha-dev/jarvis-local-ai/actions) for the latest run result. Run `python -m unittest discover tests -v` after installing the necessary test dependencies. The suite **mocks** application launches and audio actions; it does not prove that Chrome opened, that wake-word recognition worked through a physical microphone, or that the model installed successfully. See the [release checklist](RELEASE_READINESS.md) for the real Windows validation still needed.
 
 **Local inference ≠ every action is offline.** Model inference is intended to run locally after downloading model weights; opening web pages and searching are online actions. A recorded HUD status message is not proof that a live network-disconnection test occurred.
 

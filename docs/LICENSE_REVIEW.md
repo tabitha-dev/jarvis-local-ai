@@ -28,7 +28,9 @@ Jarvis's repository contains only project-authored code (MIT). It **does not red
 
 **Promising alternative:** `en_GB-cori-medium` (or `-high`). Its model card describes a UK English **female** voice, **trained from scratch** on **public-domain** LibriVox recordings ([model card](https://huggingface.co/rhasspy/piper-voices/blob/main/en/en_GB/cori/medium/MODEL_CARD)). Using a built-in Windows voice on the licensed Windows device may avoid the Piper voice-model provenance issue, but check the relevant Windows usage terms before commercial redistribution of recordings.
 
-## Finding 2: the "Hey Jarvis" wake word is non-commercial
+## Finding 2: the "Hey Jarvis" wake word is non-commercial (now opt-in)
+
+**Resolved for default setup (2026-10-20):** `setup.bat` no longer downloads the pretrained wake-word model, and normal Jarvis startup uses the HUD TALK button. The user must explicitly pass `--wake` to download and use `hey_jarvis`; its noncommercial license remains applicable in that mode.
 
 openWakeWord's pretrained models are CC BY-NC-SA 4.0. Personal use and a non-monetized demo fit this license. Whether a **monetized** video demonstrating the pretrained model constitutes licensed use requires rights-holder clarification; do not assume it is allowed. Options, safest first:
 
@@ -45,7 +47,7 @@ Jarvis only **imports** Piper and never ships it, so the MIT license on Jarvis's
 - [x] **Public-release code voice menu:** Windows built-in voice is the default; optional Cori is selectable via a strict numbered menu, with the preference saved in private `commands.json`. Alan is excluded from the public menu. The owner may keep Alan only in her separate private development copy; commercial rights for that voice remain unconfirmed.
 - [ ] **Commercial-use rights:** confirm Cori model/output rights and the relevant Windows built-in voice recording terms before any monetized voice demonstration.
 - [ ] **Videos:** is the channel/video monetized? If yes, use the Windows voice or cori for Jarvis's voice on camera, and push-to-talk instead of the wake word, and verify the rights governing the resulting audio.
-- [ ] **Wake word:** keep `hey_jarvis` (non-commercial) or train a custom one.
+- [x] **Wake word:** opt-in only with `--wake`; not downloaded in default setup. Use it only where the noncommercial license permits, or train and appropriately license a custom model.
 - [ ] **Distribution:** source only (current plan). No bundled models, voices or `.exe`.
 - [ ] Re-check these licenses on release day; model cards can change.
 

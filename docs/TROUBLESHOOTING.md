@@ -9,7 +9,7 @@
 | Model response is slow | First load may take longer. CPU-only inference varies substantially; check available memory. |
 | Piper download fails | Ensure the virtual environment is active, internet works, and the correct model/voice is selected. |
 | Microphone isn't detected | Check Windows Settings → System → Sound → Input and microphone permission. |
-| Wake word falsely triggers | Raise `WAKE_THRESHOLD` gradually; some models are noncommercial. |
+| Optional wake word (`--wake`) falsely triggers | Raise `WAKE_THRESHOLD` gradually. The default TALK mode does not need the noncommercial model. |
 | Browser or app command doesn't work | Verify the application is installed and customize `commands.json` with its actual executable or shortcut. |
 | Dashboard doesn't open | Check whether the loopback port is occupied; consult the console log. Do not expose the HUD on a public network. |
 

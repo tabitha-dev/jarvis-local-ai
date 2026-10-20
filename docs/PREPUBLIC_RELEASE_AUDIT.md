@@ -4,7 +4,7 @@
 
 ## Verified remotely
 
-- **Latest CI:** 50 of 50 isolated checks PASS on Windows Server 2025 and Ubuntu 24.04, Python 3.12 (47 mocked functional/unit checks plus three tracked-file/release-hygiene checks), [run 39484914326](https://github.com/tabitha-dev/jarvis-local-ai/actions/runs/39484914326).
+- **Latest CI:** 56 of 56 isolated checks PASS on Windows Server 2025 and Ubuntu 24.04, Python 3.12 (47 prior functional/unit checks, six listen-mode checks and three release-hygiene checks), [run 39502432199](https://github.com/tabitha-dev/jarvis-local-ai/actions/runs/39502432199).
 - **Source repository:** `main` currently has a project-authored MIT license, README, third-party notices, security guidance, voice chooser (Windows default / optional Cori), pre-release installer and source-only packaging allowlist.
 - **Local HTTP protections:** token, origin and host checks are implemented and tested at source level. No formal penetration test has been performed.
 - **Source hygiene:** private `commands.json`, virtual environments, models and media are absent from the reviewed tracked file tree. GitHub Actions additionally checks for accidentally tracked private/config/media files; this is not a full secret-history or binary forensics scan.
@@ -15,7 +15,7 @@
 - [ ] **Fresh Windows install:** test `setup.bat` in an independent, properly authorized Windows 10/11 environment with no inherited Python/Ollama/model setup. Follow [Windows test checklist](WINDOWS_RELEASE_TEST.md). Real hardware and actual downloads **cannot** be validated with GitHub's mocked unit tests.
 - [ ] **Hardware and runtime:** test Windows default TTS, actual microphone and speakers, optional Cori selection and fallback, browser commands, HUD, typed prompt and local Ollama response. Record truthful PASS/FAIL results.
 - [ ] **Dependency lock:** on a verified working Windows installation, run `update_lock.bat` (it runs `pip freeze` and `pip check`), review versions and paths, commit `requirements.lock.txt`, then repeat the clean install against it. Do **not** invent or auto-pin arbitrary Windows versions on CI/Linux.
-- [ ] **Wake-word license and behavior:** the installer currently downloads `openWakeWord`'s pretrained `hey_jarvis`, and ordinary startup uses it by default. The pretrained model is **CC BY-NC-SA 4.0 / noncommercial**. Before commercial or monetized use, either obtain sufficient permission, make push-to-talk/typed mode the safe default and reserve wake-word use for appropriately licensed opt-in, or otherwise verify the intended use is permitted. Mere notice/disclaimer does not override the license.
+- [x] **Wake-word default behavior:** regular startup uses the TALK button and typing. Installer no longer downloads `hey_jarvis` automatically. The pretrained wake word is only fetched and used when a user explicitly starts with `--wake`; its **CC BY-NC-SA 4.0 noncommercial license still applies** and requires separate authorization for commercial usage. Guarded by `tests/test_listen_mode.py`.
 - [ ] **Voice rights:** Windows built-in TTS is the default and Alan has been excluded. Optional Cori's public-domain **training recordings alone do not establish** all voice-model/output/commercial rights. Verify those terms before promoting a monetized voice demo or distributing outputs.
 - [ ] **Real Windows safety review:** confirm command allowlists, install scripts and loopback HUD behavior on Windows, without enabling unsafe external access or bypassing security warnings. Scrub personal paths and any private settings from shareable artifacts.
 - [ ] **Release package:** inspect source-only ZIP from `make_release.bat` / `tools/package_release.py`; no pretrained model, voice binary, local config, `.venv`, chat transcript, personal logs, API keys, nor unauthorized recordings.
@@ -29,4 +29,4 @@
 4. Provide the redacted report and PASS/FAIL notes for review. Do not send raw personal logs or access tokens. The maintainer can then address failures in the existing private repository.
 5. Only after the last gate is complete and owner explicitly approves public release, change repository visibility and verify the download while signed out.
 
-**Until those checks are completed, the correct external description is “private pre-release prototype with 50 passing isolated checks”, not “publicly installation-tested” or “commercially cleared.”**
+**Until those checks are completed, the correct external description is “private pre-release prototype with 56 passing isolated checks”, not “publicly installation-tested” or “commercially cleared.”**

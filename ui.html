@@ -203,7 +203,7 @@
         <div class="core" id="core"></div>
       </div>
 
-      <div class="status"><span id="state">STANDBY</span><small id="hint">SAY “HEY JARVIS” OR TYPE BELOW</small></div>
+      <div class="status"><span id="state">STANDBY</span><small id="hint">CLICK TALK OR TYPE BELOW</small></div>
 
       <div class="readout bl">
         AUDIO INPUT
@@ -232,7 +232,7 @@
   </nav>
   <footer>
     <input id="cmd" autocomplete="off" placeholder="Type a command (open Chrome, search YouTube for…) or ask anything…">
-    <button id="talk" title="Talk without the wake word">TALK</button>
+    <button id="talk" title="Click, then speak">TALK</button>
     <button id="send">SEND</button>
   </footer>
 
@@ -240,7 +240,7 @@
   const $ = id => document.getElementById(id);
   const body = document.body, log = $("log");
   const LABELS = {
-    idle:      ["STANDBY",    "SAY “HEY JARVIS” OR TYPE BELOW"],
+    idle:      ["STANDBY",    "CLICK TALK OR TYPE BELOW"],
     listening: ["LISTENING",  "GO AHEAD, I'M ALL EARS"],
     hearing:   ["HEARING",    "TURNING SPEECH INTO TEXT"],
     thinking:  ["PROCESSING", "RUNNING LOCAL MODEL"],

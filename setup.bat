@@ -88,11 +88,10 @@ echo Your selection is saved to your personal commands.json.
 if errorlevel 1 goto :failed
 
 echo.
-echo === 5/6  Speech and wake-word models ===
+echo === 5/6  Speech model ===
 ".venv\Scripts\python.exe" -c "from faster_whisper import WhisperModel; WhisperModel('base.en', device='cpu', compute_type='int8'); print('Speech model ready')"
 if errorlevel 1 goto :failed
-".venv\Scripts\python.exe" -c "from openwakeword.utils import download_models; download_models(['hey_jarvis']); print('Wake-word download finished')"
-if errorlevel 1 goto :failed
+echo The optional "Hey Jarvis" wake word is NOT downloaded. See README: Optional wake word.
 
 echo.
 echo === 6/6  Local Gemma AI model ===
