@@ -15,7 +15,7 @@
 2. Locate or install **Ollama**; attempt to start its local service and confirm the API responds.
 3. Create `.venv`, install Python requirements and copy `commands.example.json` to `commands.json`.
 4. Download the configured **Piper** voice files.
-5. Download the **faster-whisper** speech model only. The optional noncommercial `hey_jarvis` wake-word model is not downloaded during setup.
+5. Download the **faster-whisper** speech model for transcription and default hands-free “Jarvis” name recognition only. The optional noncommercial `hey_jarvis` wake-word model is not downloaded during setup.
 6. Ask Ollama to fetch the configured **Gemma 4** variant.
 
 Each step now includes failure detection. The setup script returns a failure instead of reporting that an incomplete install succeeded. Windows/macOS/Linux behaviors are not interchangeable; this project currently targets Windows.
@@ -40,7 +40,7 @@ The selection is stored as `"voice": "windows"` or `"voice": "piper:en_GB-cori-m
 3. On a **test PC**, open a command prompt in the project directory and run `setup.bat`. A first download can take a while; time varies by internet speed and available CPU/disk.
 4. Run `run_tests.bat`. This tests mocked actions and server authorization but **does not** open programs or validate microphone input.
 5. If successful, run `run_jarvis.bat`. Check that the HUD opens, typed questions work and the Ollama model replies.
-6. For voice testing, use a real microphone, check the default HUD TALK button and voice output. Test the optional `--wake` mode only when you have reviewed its noncommercial license.
+6. For voice testing, use a real microphone, confirm “Jarvis, what time is it?” and “Hi Jarvis, open Notepad,” verify HUD TALK, and check Windows SAPI voice output. Test the optional `--wake` mode only when you have reviewed its noncommercial license.
 7. Repeat all steps on a **clean Windows 10 or 11 installation** before approving a first public release.
 
 ## Basic checks
