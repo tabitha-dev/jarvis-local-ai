@@ -1,0 +1,14 @@
+{
+  "_how_to_use": "Copy this file to commands.json (setup.bat does it for you), add your own shortcuts, then restart Jarvis. Say 'open <name>' to use them. Apps can be a program name or a full path to an .exe.",
+  "browser": "chrome",
+  "apps": {
+    "notes": "notepad"
+  },
+  "websites": {
+    "my portfolio": "https://code.tabitha.dev",
+    "my channel": "https://www.youtube.com/@tabitha-dev"
+  },
+  "folders": {
+    "projects": "C:\\Code"
+  }
+}

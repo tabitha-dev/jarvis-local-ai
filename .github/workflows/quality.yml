@@ -1,0 +1,39 @@
+name: Source checks (no voice/model downloads)
+on:
+  push:
+    branches: [main, "review/**"]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-tests:
+    name: ${{ matrix.os }} · Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+        python-version: ["3.12"]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install PortAudio library for Linux native import
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y libportaudio2
+      - name: Install test dependencies only (no models)
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy requests sounddevice
+      - name: Validate syntax
+        run: python -m compileall -q commands.py jarvis.py tests tools
+      - name: Verify allowlisted source files
+        run: python tools/package_release.py --check
+      - name: Test mocked commands and local HTTP endpoints
+        run: python -m unittest discover tests -v

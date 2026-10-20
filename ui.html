@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="jarvis-token" content="__JARVIS_TOKEN__">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>J.A.R.V.I.S.</title>
+<style>
+  :root {
+    --bg: #03080d;
+    --panel: rgba(10, 30, 44, .55);
+    --line: rgba(80, 220, 255, .18);
+    --cyan: #4fe3ff;
+    --cyan-dim: #1d7f99;
+    --amber: #ffb547;
+    --white: #e8fbff;
+    --text: #bfefff;
+    --muted: #5d8a99;
+    --accent: var(--cyan);
+    --glow: rgba(79, 227, 255, .55);
+    --mono: "Cascadia Mono", Consolas, "Courier New", monospace;
+    --sans: "Bahnschrift", "Segoe UI Variable", "Segoe UI", sans-serif;
+  }
+  body[data-state="thinking"] { --accent: var(--amber); --glow: rgba(255, 181, 71, .55); }
+  body[data-state="speaking"] { --accent: var(--white); --glow: rgba(200, 245, 255, .7); }
+  body[data-state="offline"]  { --accent: #ff5d6c;      --glow: rgba(255, 93, 108, .5); }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background:
+      radial-gradient(ellipse at 38% 50%, rgba(30, 110, 140, .22), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(79,227,255,.035) 0 1px, transparent 1px 44px),
+      repeating-linear-gradient(90deg, rgba(79,227,255,.035) 0 1px, transparent 1px 44px),
+      var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    user-select: none;
+  }
+  body::after { /* scanlines */
+    content: ""; position: fixed; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+    mix-blend-mode: multiply;
+  }
+
+  /* ---------- top bar ---------- */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 28px; border-bottom: 1px solid var(--line);
+    font-family: var(--mono); font-size: 12px; letter-spacing: .18em; color: var(--muted);
+  }
+  .brand { font-family: var(--sans); font-size: 20px; letter-spacing: .5em; color: var(--cyan); font-weight: 600;
+           text-shadow: 0 0 12px rgba(79,227,255,.6); }
+  .brand small { display: block; font-family: var(--mono); font-size: 9px; letter-spacing: .3em; color: var(--muted); font-weight: 400; margin-top: 2px; }
+  .chips { display: flex; gap: 10px; }
+  .chip { border: 1px solid var(--line); padding: 5px 10px; border-radius: 2px; background: var(--panel); }
+  .chip b { color: var(--cyan); font-weight: 400; }
+  .chip.ok::before { content: "● "; color: #48ff9a; }
+  #clock { color: var(--text); font-size: 13px; }
+
+  /* ---------- main ---------- */
+  main { display: grid; grid-template-columns: 1fr minmax(320px, 440px); min-height: 0; }
+
+  .stage { position: relative; display: grid; place-items: center; min-height: 0; }
+  .reactor { position: relative; width: min(56vh, 46vw); aspect-ratio: 1; }
+  .reactor svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .ring { transform-origin: 250px 250px; transform-box: view-box; }
+  .spin-a { animation: spin 40s linear infinite; }
+  .spin-b { animation: spin 26s linear infinite reverse; }
+  .spin-c { animation: spin 14s linear infinite; }
+  body[data-state="thinking"] .spin-a { animation-duration: 6s; }
+  body[data-state="thinking"] .spin-b { animation-duration: 3.5s; }
+  body[data-state="thinking"] .spin-c { animation-duration: 1.6s; }
+  body[data-state="listening"] .spin-c { animation-duration: 6s; }
+  body[data-state="hearing"] .spin-b { animation-duration: 8s; }
+  body[data-state="hearing"] .spin-c { animation-duration: 3s; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .stroke { stroke: var(--accent); transition: stroke .5s; fill: none; }
+  .fillc  { fill: var(--accent); transition: fill .5s; }
+  .faint  { opacity: .28; }
+
+  .core {
+    position: absolute; left: 50%; top: 50%; width: 30%; aspect-ratio: 1;
+    transform: translate(-50%, -50%) scale(var(--pulse, 1));
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0 12%, var(--accent) 30%, transparent 70%);
+    box-shadow: 0 0 60px 18px var(--glow), inset 0 0 30px var(--glow);
+    transition: transform .08s linear, box-shadow .5s, background .5s;
+    animation: breathe 4s ease-in-out infinite;
+  }
+  body[data-state="speaking"] .core { animation: talk .45s ease-in-out infinite; }
+  body[data-state="thinking"] .core { animation: breathe 1.2s ease-in-out infinite; }
+  @keyframes breathe { 50% { opacity: .72; } }
+  @keyframes talk { 50% { transform: translate(-50%, -50%) scale(1.14); } }
+
+  .status {
+    position: absolute; bottom: 7%; left: 0; right: 0; text-align: center;
+    font-family: var(--mono); letter-spacing: .5em; font-size: 13px; color: var(--accent);
+    text-shadow: 0 0 10px var(--glow); transition: color .5s;
+  }
+  .status small { display: block; margin-top: 8px; letter-spacing: .2em; font-size: 11px; color: var(--muted); text-shadow: none; }
+
+  /* side readouts */
+  .readout { position: absolute; font-family: var(--mono); font-size: 10px; letter-spacing: .2em; color: var(--muted); line-height: 1.9; }
+  .readout b { color: var(--cyan); font-weight: 400; }
+  .readout.tl { top: 26px; left: 28px; }
+  .readout.bl { bottom: 26px; left: 28px; }
+  .bars { display: flex; gap: 3px; align-items: flex-end; height: 34px; margin-top: 6px; }
+  .bars i { width: 4px; background: var(--accent); opacity: .7; height: 8%; transition: height .1s, background .5s; }
+
+  /* ---------- transcript ---------- */
+  aside {
+    border-left: 1px solid var(--line); background: linear-gradient(180deg, rgba(8,24,34,.7), rgba(4,12,18,.7));
+    display: grid; grid-template-rows: auto 1fr; min-height: 0;
+  }
+  aside h2 { font-family: var(--mono); font-weight: 400; font-size: 11px; letter-spacing: .35em; color: var(--muted);
+             padding: 16px 22px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; }
+  #log { overflow-y: auto; padding: 18px 22px 30px; display: flex; flex-direction: column; gap: 16px; user-select: text; }
+  #log::-webkit-scrollbar { width: 6px; } #log::-webkit-scrollbar-thumb { background: var(--line); }
+  .msg { animation: rise .35s ease-out; }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+  .msg .who { font-family: var(--mono); font-size: 10px; letter-spacing: .3em; margin-bottom: 5px; }
+  .msg.you .who { color: var(--muted); }
+  .msg.jarvis .who { color: var(--cyan); }
+  .msg .body { font-size: 15px; line-height: 1.5; color: var(--white); }
+  .msg.you .body { color: #9fc6d3; }
+  .msg.jarvis .body { border-left: 2px solid var(--cyan-dim); padding-left: 12px; }
+  .msg.sys .body { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .08em; }
+  .caret::after { content: "▍"; color: var(--cyan); animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .empty { color: var(--muted); font-family: var(--mono); font-size: 12px; letter-spacing: .1em; line-height: 1.8; }
+
+  /* ---------- command bar ---------- */
+  .quick { display: flex; gap: 8px; align-items: center; padding: 10px 28px 0; border-top: 1px solid var(--line);
+           background: rgba(3,10,15,.8); overflow-x: auto; scrollbar-width: none; }
+  .quick span { font-family: var(--mono); font-size: 10px; letter-spacing: .3em; color: var(--muted); margin-right: 6px; }
+  .quick button { padding: 7px 12px; font-size: 10px; letter-spacing: .18em; white-space: nowrap; border-color: var(--line); color: var(--text); }
+  .quick button:hover { border-color: var(--cyan-dim); color: var(--cyan); }
+  footer { display: flex; gap: 12px; padding: 12px 28px 14px; background: rgba(3,10,15,.8); }
+  #cmd {
+    flex: 1; background: var(--panel); border: 1px solid var(--line); color: var(--white);
+    font-family: var(--mono); font-size: 14px; padding: 12px 16px; outline: none; letter-spacing: .04em;
+  }
+  #cmd:focus { border-color: var(--cyan-dim); box-shadow: 0 0 0 1px var(--cyan-dim), 0 0 18px rgba(79,227,255,.15); }
+  #cmd::placeholder { color: var(--muted); }
+  button {
+    background: transparent; border: 1px solid var(--cyan-dim); color: var(--cyan);
+    font-family: var(--mono); font-size: 12px; letter-spacing: .25em; padding: 0 22px; cursor: pointer;
+  }
+  button:hover { background: rgba(79,227,255,.08); box-shadow: 0 0 14px rgba(79,227,255,.2); }
+  button:focus-visible { outline: 1px solid var(--cyan); outline-offset: 2px; }
+
+  @media (max-width: 860px), (max-aspect-ratio: 4/5) {
+    main { grid-template-columns: 1fr; grid-template-rows: 1fr 40%; }
+    aside { border-left: 0; border-top: 1px solid var(--line); }
+    .reactor { width: min(40vh, 80vw); }
+    .chips .chip:not(.ok), .readout { display: none; }
+    header { padding: 12px 16px; } footer { padding: 12px 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }
+</style>
+</head>
+<body data-state="idle">
+  <header>
+    <div class="brand">J.A.R.V.I.S.<small>JUST A RATHER VERY INTELLIGENT SYSTEM</small></div>
+    <div class="chips">
+      <span class="chip ok" id="net">LOCAL AI · ON-DEVICE</span>
+      <span class="chip">MODEL <b id="model">—</b></span>
+      <span class="chip" id="clock">--:--</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="stage">
+      <div class="readout tl">
+        USER <b id="user">FRIEND</b><br>
+        LINK <b id="link">CONNECTING</b><br>
+        SESSION <b id="uptime">00:00</b>
+      </div>
+
+      <div class="reactor" aria-hidden="true">
+        <svg viewBox="0 0 500 500">
+          <g class="ring spin-a">
+            <circle class="stroke faint" cx="250" cy="250" r="240" stroke-width="1"/>
+            <circle class="stroke" cx="250" cy="250" r="232" stroke-width="2" stroke-dasharray="2 10"/>
+            <circle class="stroke" cx="250" cy="250" r="222" stroke-width="1" stroke-dasharray="120 30 20 30"/>
+          </g>
+          <g class="ring spin-b">
+            <circle class="stroke" cx="250" cy="250" r="198" stroke-width="10" stroke-dasharray="70 18" opacity=".55"/>
+            <circle class="stroke faint" cx="250" cy="250" r="184" stroke-width="1"/>
+          </g>
+          <g class="ring spin-c">
+            <circle class="stroke" cx="250" cy="250" r="162" stroke-width="3" stroke-dasharray="250 60 40 60" />
+            <circle class="stroke faint" cx="250" cy="250" r="150" stroke-width="18" stroke-dasharray="3 6"/>
+          </g>
+          <g id="ticks"></g>
+          <circle id="level" class="stroke" cx="250" cy="250" r="120" stroke-width="2" opacity=".8"/>
+        </svg>
+        <div class="core" id="core"></div>
+      </div>
+
+      <div class="status"><span id="state">STANDBY</span><small id="hint">SAY “HEY JARVIS” OR TYPE BELOW</small></div>
+
+      <div class="readout bl">
+        AUDIO INPUT
+        <div class="bars" id="bars"></div>
+      </div>
+    </section>
+
+    <aside>
+      <h2><span>TRANSCRIPT</span><span id="count">0</span></h2>
+      <div id="log"><div class="empty" id="empty">&gt; Awaiting instructions.<br>&gt; AI model running on this machine.</div></div>
+    </aside>
+  </main>
+
+  <nav class="quick" aria-label="Quick commands">
+    <span>QUICK</span>
+    <button data-cmd="open chrome">CHROME</button>
+    <button data-cmd="open vs code">VS CODE</button>
+    <button data-cmd="open my portfolio">PORTFOLIO</button>
+    <button data-cmd="open my channel">MY CHANNEL</button>
+    <button data-cmd="open youtube studio">YT STUDIO</button>
+    <button data-cmd="open github">GITHUB</button>
+    <button data-cmd="open linkedin jobs">LINKEDIN JOBS</button>
+    <button data-cmd="open gmail">GMAIL</button>
+    <button data-cmd="open downloads">DOWNLOADS</button>
+    <button data-cmd="what can you do">HELP</button>
+  </nav>
+  <footer>
+    <input id="cmd" autocomplete="off" placeholder="Type a command (open Chrome, search YouTube for…) or ask anything…">
+    <button id="talk" title="Talk without the wake word">TALK</button>
+    <button id="send">SEND</button>
+  </footer>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const body = document.body, log = $("log");
+  const LABELS = {
+    idle:      ["STANDBY",    "SAY “HEY JARVIS” OR TYPE BELOW"],
+    listening: ["LISTENING",  "GO AHEAD, I'M ALL EARS"],
+    hearing:   ["HEARING",    "TURNING SPEECH INTO TEXT"],
+    thinking:  ["PROCESSING", "RUNNING LOCAL MODEL"],
+    speaking:  ["RESPONDING", ""],
+    offline:   ["OFFLINE",    "RESTART JARVIS TO RECONNECT"],
+  };
+
+  // ticks around the reactor
+  const ticks = $("ticks");
+  for (let i = 0; i < 72; i++) {
+    const a = i * 5 * Math.PI / 180, long = i % 6 === 0;
+    const r1 = long ? 206 : 210, r2 = 216;
+    const l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    l.setAttribute("x1", 250 + r1 * Math.cos(a)); l.setAttribute("y1", 250 + r1 * Math.sin(a));
+    l.setAttribute("x2", 250 + r2 * Math.cos(a)); l.setAttribute("y2", 250 + r2 * Math.sin(a));
+    l.setAttribute("class", "stroke"); l.setAttribute("stroke-width", long ? 2 : 1); l.setAttribute("opacity", long ? .9 : .4);
+    ticks.appendChild(l);
+  }
+  // audio bars
+  const bars = [];
+  for (let i = 0; i < 24; i++) { const b = document.createElement("i"); $("bars").appendChild(b); bars.push(b); }
+
+  function setState(s) {
+    body.dataset.state = s;
+    const [a, b] = LABELS[s] || LABELS.idle;
+    $("state").textContent = a; $("hint").textContent = b;
+    if (s !== "listening") level(0);
+  }
+
+  let smooth = 0;
+  function level(v) { // v: 0..1
+    smooth = smooth * .5 + v * .5;
+    $("core").style.setProperty("--pulse", 1 + smooth * .35);
+    $("level").setAttribute("r", 120 + smooth * 40);
+    bars.forEach((b, i) => {
+      const h = Math.max(6, Math.min(100, smooth * 100 * (0.5 + Math.random() * .8)));
+      b.style.height = (i === bars.length - 1 ? h : parseFloat(bars[i + 1].style.height) || 6) + "%";
+    });
+  }
+
+  let count = 0, current = null;
+  function add(cls, who, text) {
+    $("empty")?.remove();
+    const m = document.createElement("div");
+    m.className = "msg " + cls;
+    m.innerHTML = `<div class="who"></div><div class="body"></div>`;
+    m.querySelector(".who").textContent = who;
+    m.querySelector(".body").textContent = text;
+    log.appendChild(m);
+    if (cls !== "sys") $("count").textContent = String(++count).padStart(2, "0");
+    log.scrollTop = log.scrollHeight;
+    return m.querySelector(".body");
+  }
+
+  function handle(e) {
+    if (e.type === "state") setState(e.value);
+    else if (e.type === "level") level(e.value);
+    else if (e.type === "you") add("you", "YOU", e.text);
+    else if (e.type === "jarvis_start") { current = add("jarvis", "JARVIS", ""); current.classList.add("caret"); }
+    else if (e.type === "jarvis") {
+      if (!current) { current = add("jarvis", "JARVIS", ""); }
+      current.textContent += (current.textContent ? " " : "") + e.text;
+      current.classList.add("caret"); log.scrollTop = log.scrollHeight;
+    }
+    else if (e.type === "jarvis_end") { current?.classList.remove("caret"); current = null; }
+    else if (e.type === "sys") add("sys", "SYSTEM", e.text);
+    else if (e.type === "info") {
+      if (e.model) $("model").textContent = e.model.toUpperCase();
+      if (e.user) $("user").textContent = e.user.toUpperCase();
+    }
+  }
+
+  function connect() {
+    const token = document.querySelector('meta[name="jarvis-token"]').content;
+    const es = new EventSource("/events?token=" + encodeURIComponent(token));
+    es.onopen = () => { $("link").textContent = "SECURE"; if (body.dataset.state === "offline") setState("idle"); };
+    es.onmessage = m => handle(JSON.parse(m.data));
+    es.onerror = () => { $("link").textContent = "LOST"; setState("offline"); };
+  }
+  connect();
+
+  function post(path, data) {
+    const token = document.querySelector('meta[name="jarvis-token"]').content;
+    return fetch(path, { method: "POST", headers: { "Content-Type": "application/json", "X-Jarvis-Token": token }, body: JSON.stringify(data || {}) }).catch(() => {});
+  }
+  function send() {
+    const t = $("cmd").value.trim(); if (!t) return;
+    post("/say", { text: t }); $("cmd").value = "";
+  }
+  $("send").onclick = send;
+  $("cmd").addEventListener("keydown", e => { if (e.key === "Enter") send(); });
+  $("talk").onclick = () => post("/talk");
+  document.querySelectorAll(".quick button").forEach(b => b.onclick = () => post("/say", { text: b.dataset.cmd }));
+
+  const start = Date.now();
+  setInterval(() => {
+    const d = new Date();
+    $("clock").textContent = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " · " +
+      d.toLocaleDateString([], { month: "short", day: "numeric" }).toUpperCase();
+    const s = Math.floor((Date.now() - start) / 1000);
+    $("uptime").textContent = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+  }, 1000);
+</script>
+</body>
+</html>

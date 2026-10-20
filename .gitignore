@@ -1,0 +1,37 @@
+# Per-user configuration and secrets
+commands.json
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Downloaded local assets
+.venv/
+venv/
+voices/
+models/
+*.onnx
+*.onnx.json
+*.tflite
+*.wav
+*.mp3
+*.mp4
+
+# Python and test artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Local debugging
+*.log
+*.tmp
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
