@@ -1,7 +1,8 @@
 # Changelog
 
 ## Private release-preparation update | October 20, 2026
-- The HUD's **TALK** button is the default listener; the pretrained `hey_jarvis` wake word is **opt-in via `--wake`** only, with its noncommercial license displayed.
+- The hands-free default recognizes **“Jarvis, …”** locally using faster-whisper; the pretrained `hey_jarvis` wake word is **opt-in via `--wake`** only, with its noncommercial license displayed.
+- Windows voice uses SAPI with a pyttsx3 fallback and reports the output device when available; commands accept Hey/Hi/Hello Jarvis prefixes.
 - `setup.bat` no longer downloads the restricted wake-word model by default.
 - The source includes `tests/test_listen_mode.py` (six new regression tests) and `docs/VOICES.md`; the release package allowlist includes both.
 - The system persona no longer references Iron Man.
