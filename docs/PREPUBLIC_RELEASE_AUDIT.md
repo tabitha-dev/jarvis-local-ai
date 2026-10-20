@@ -4,7 +4,7 @@
 
 ## Verified remotely
 
-- **Latest CI:** 47 of 47 isolated/mock-based tests PASS on Windows Server 2025 and Ubuntu 24.04, Python 3.12, [run 39367091485](https://github.com/tabitha-dev/jarvis-local-ai/actions/runs/39367091485).
+- **Latest CI:** 50 of 50 isolated checks PASS on Windows Server 2025 and Ubuntu 24.04, Python 3.12 (47 mocked functional/unit checks plus three tracked-file/release-hygiene checks), [run 39484914326](https://github.com/tabitha-dev/jarvis-local-ai/actions/runs/39484914326).
 - **Source repository:** `main` currently has a project-authored MIT license, README, third-party notices, security guidance, voice chooser (Windows default / optional Cori), pre-release installer and source-only packaging allowlist.
 - **Local HTTP protections:** token, origin and host checks are implemented and tested at source level. No formal penetration test has been performed.
 - **Source hygiene:** private `commands.json`, virtual environments, models and media are absent from the reviewed tracked file tree. GitHub Actions additionally checks for accidentally tracked private/config/media files; this is not a full secret-history or binary forensics scan.
@@ -29,4 +29,4 @@
 4. Provide the redacted report and PASS/FAIL notes for review. Do not send raw personal logs or access tokens. The maintainer can then address failures in the existing private repository.
 5. Only after the last gate is complete and owner explicitly approves public release, change repository visibility and verify the download while signed out.
 
-**Until those checks are completed, the correct external description is “private pre-release prototype with 47 passing isolated tests”, not “publicly installation-tested” or “commercially cleared.”**
+**Until those checks are completed, the correct external description is “private pre-release prototype with 50 passing isolated checks”, not “publicly installation-tested” or “commercially cleared.”**
