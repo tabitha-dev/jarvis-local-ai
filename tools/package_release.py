@@ -11,13 +11,13 @@ ROOT = Path(__file__).resolve().parents[1]
 FILES = (
     '.gitignore', 'README.md', 'RELEASE_READINESS.md', 'CHANGELOG.md', 'LICENSE',
     'THIRD_PARTY_NOTICES.md', 'CONTRIBUTING.md',
-    'commands.example.json', 'commands.py', 'jarvis.py',
+    'commands.example.json', 'commands.py', 'jarvis.py', 'voice_settings.py',
     'setup.bat', 'run_jarvis.bat', 'run_tests.bat',
-    'make_release.bat', 'update_lock.bat', '.gitattributes', 'requirements.txt', 'ui.html',
-    'tests/test_commands.py', 'tests/test_ui_security.py', 'tests/test_states.py',
+    'make_release.bat', 'update_lock.bat', 'change_voice.bat', '.gitattributes', 'requirements.txt', 'ui.html',
+    'tests/test_commands.py', 'tests/test_ui_security.py', 'tests/test_states.py', 'tests/test_voice.py',
     'docs/ARCHITECTURE.md', 'docs/INSTALL_WINDOWS.md',
     'docs/TROUBLESHOOTING.md', 'docs/SECURITY.md', 'docs/WINDOWS_RELEASE_TEST.md',
-    'tools/package_release.py', 'tools/windows_test_report.bat',
+    'tools/package_release.py', 'tools/windows_test_report.bat', 'tools/select_voice.py',
     'docs/LICENSE_REVIEW.md',
     'assets/jarvis-real-hud.jpg',
 )

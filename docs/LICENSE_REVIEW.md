@@ -42,7 +42,8 @@ Jarvis only **imports** Piper and never ships it, so the MIT license on Jarvis's
 
 ## Owner decisions (tick before going public)
 
-- [ ] **Voice:** retain `en_GB-alan-medium` only after confirming appropriate permission, **or** switch the default to `en_GB-cori-medium` following a rights and audio-quality check (change `PIPER_VOICE` in `jarvis.py` **and** the `download_voices` line in `setup.bat`).
+- [x] **Public-release code voice menu:** Windows built-in voice is the default; optional Cori is selectable via a strict numbered menu, with the preference saved in private `commands.json`. Alan is excluded from the public menu. The owner may keep Alan only in her separate private development copy; commercial rights for that voice remain unconfirmed.
+- [ ] **Commercial-use rights:** confirm Cori model/output rights and the relevant Windows built-in voice recording terms before any monetized voice demonstration.
 - [ ] **Videos:** is the channel/video monetized? If yes, use the Windows voice or cori for Jarvis's voice on camera, and push-to-talk instead of the wake word, and verify the rights governing the resulting audio.
 - [ ] **Wake word:** keep `hey_jarvis` (non-commercial) or train a custom one.
 - [ ] **Distribution:** source only (current plan). No bundled models, voices or `.exe`.

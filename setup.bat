@@ -78,10 +78,13 @@ if not exist "commands.json" (
 )
 
 echo.
-echo === 4/6  Voice assets ===
-if not exist "voices" mkdir "voices"
-if errorlevel 1 goto :failed
-".venv\Scripts\python.exe" -m piper.download_voices en_GB-alan-medium --data-dir "voices"
+echo === 4/6  Choose your voice ===
+echo Voice 1: Windows built-in (default; no voice download)
+echo Voice 2: Cori - British female (optional Piper download)
+echo          Public-domain training recordings; check docs\LICENSE_REVIEW.md.
+echo Press 1, 2, or Enter. No input defaults to Windows after 25 seconds.
+echo Your selection is saved to your personal commands.json.
+".venv\Scripts\python.exe" tools\select_voice.py --timeout 25
 if errorlevel 1 goto :failed
 
 echo.

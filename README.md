@@ -26,8 +26,10 @@
 ## Quick start (3 steps)
 
 1. **Download:** if you have access to this private repository, click **Code → Download ZIP** and extract it to a folder. Public downloads are **not available yet**.
-2. **Set up and check:** read `setup.bat` and the [Windows installation guide](docs/INSTALL_WINDOWS.md), then run `setup.bat` on a **test PC**. The first run needs internet and may download several GB. Run `run_tests.bat` when setup finishes.
+2. **Set up and check:** read `setup.bat` and the [Windows installation guide](docs/INSTALL_WINDOWS.md), then run `setup.bat` on a **test PC**. The first run needs internet and may download several GB. Choose your voice from the numbered menu (Windows is the safe default). Run `run_tests.bat` when setup finishes.
 3. **Run Jarvis:** launch `run_jarvis.bat`, then type a question in the HUD or use a microphone. [Troubleshooting](docs/TROUBLESHOOTING.md) is available if something doesn't start.
+
+**Your voice, your choice:** Setup offers **1. Windows voice** (default; no additional voice download) or **2. Cori** (optional British female Piper voice with public-domain training recordings; verify model and output rights). Press **Enter** or leave setup unattended to use the Windows voice. Your choice is saved to the private, Git-ignored `commands.json`. To change it later, run `change_voice.bat` and restart Jarvis. Alan is not offered in the public release; see [voice licensing](docs/LICENSE_REVIEW.md).
 
 **Dependency note:** `requirements.txt` is a readable, unpinned list until `requirements.lock.txt` is generated on a working Windows setup. `setup.bat` prefers the lock file once it exists. Maintainers should run `update_lock.bat`, review and commit the resulting lock file **after** a successful real-Windows test; do not guess package versions.
 
@@ -110,7 +112,7 @@ The `commands.example.json` file is a starter template. Setup makes a personal `
 }
 ```
 
-The **PORTFOLIO** and **MY CHANNEL** buttons intentionally start with the creator’s public website and YouTube channel. They are examples: edit their URLs in your private `commands.json` to point to *your* sites. The assistant starts with the neutral name `Friend` (never “Tabitha”); update `USER_NAME` in `jarvis.py` to personalize it. Edit other apps, folders and shortcuts to suit your computer. You can also change `OLLAMA_MODEL` and audio preferences near the top of `jarvis.py`. For colors, edit the CSS variables in `ui.html`. Never commit a personalized config or private file.
+The **PORTFOLIO** and **MY CHANNEL** buttons intentionally start with the creator’s public website and YouTube channel. They are examples: edit their URLs in your private `commands.json` to point to *your* sites. Voice is saved under `"voice"` in your private `commands.json`; supported values are `"windows"` and `"piper:en_GB-cori-medium"`. Unknown values automatically use Windows. The assistant starts with the neutral name `Friend` (never “Tabitha”); update `USER_NAME` in `jarvis.py` to personalize it. Edit other apps, folders and shortcuts to suit your computer. You can also change `OLLAMA_MODEL` and audio preferences near the top of `jarvis.py`. For colors, edit the CSS variables in `ui.html`. Never commit a personalized config or private file.
 
 ## Project files
 
@@ -123,6 +125,9 @@ setup.bat               Windows-only setup with failure checks
 run_jarvis.bat          Start the assistant
 run_tests.bat           Run isolated tests
 update_lock.bat         Generate a reviewed lock file from the working Windows environment
+change_voice.bat         Reopen the numbered voice selection without reinstalling
+voice_settings.py       Validate and read the private voice choice
+tools/select_voice.py   Strict menu and optional Cori downloader
 requirements.txt       Readable dependency list; lock file is pending a verified Windows environment
 tests/                 Mocked command and local HTTP regression tests
 docs/                  Install, architecture, security and troubleshooting
