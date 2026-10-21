@@ -10,7 +10,7 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 FILES = (
     '.gitignore', 'README.md', 'RELEASE_READINESS.md', 'CHANGELOG.md', 'LICENSE',
-    'THIRD_PARTY_NOTICES.md', 'CONTRIBUTING.md',
+    'THIRD_PARTY_NOTICES.md', 'CONTRIBUTING.md', 'RELEASE_NOTES.md',
     'commands.example.json', 'commands.py', 'jarvis.py', 'voice_settings.py',
     'setup.bat', 'run_jarvis.bat', 'run_tests.bat',
     'make_release.bat', 'update_lock.bat', 'change_voice.bat', '.gitattributes', 'requirements.txt', 'ui.html',

@@ -9,7 +9,7 @@
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![Windows](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011-0078D4?logo=windows&logoColor=white)](docs/INSTALL_WINDOWS.md)
 [![Local inference](https://img.shields.io/badge/AI-Local%20inference-0B9C98)](docs/ARCHITECTURE.md)
-[![Stage](https://img.shields.io/badge/Status-Pre--release-F2B84B)](RELEASE_READINESS.md)
+[![Stage](https://img.shields.io/badge/Status-Public%20source-0B9C98)](RELEASE_READINESS.md)
 [![Source tests](https://github.com/tabitha-dev/jarvis-local-ai/actions/workflows/quality.yml/badge.svg)](https://github.com/tabitha-dev/jarvis-local-ai/actions/workflows/quality.yml)
 
 **[Get started](#quick-start-3-steps)** · **[Explore features](#what-can-jarvis-do)** · **[Understand the architecture](#how-it-works)** · **[Security](docs/SECURITY.md)** · **[Tabitha Dev on YouTube](https://www.youtube.com/@tabitha-dev)**
@@ -21,17 +21,17 @@
 </div>
 
 > [!IMPORTANT]
-> **Private development preview, not a public download.** The three steps below are for authorized testers on a spare/test Windows PC only. A fresh Windows install, microphone, and third-party licensing still need verification. Read the scripts before running them and **do not blindly bypass SmartScreen**. [Release status](RELEASE_READINESS.md).
+> **Public source release, not a certified installer.** The creator reports a successful Windows 11 fresh-folder test with Python and Ollama already installed. An independent clean-PC setup without them **has not been tested**. Third-party voice/model terms still apply. Read the scripts before running them and **do not blindly bypass SmartScreen**. [Release status](RELEASE_READINESS.md).
 
 ## Quick start (3 steps)
 
-1. **Download:** if you have access to this private repository, click **Code → Download ZIP** and extract it to a folder. Public downloads are **not available yet**.
+1. **Download:** use **Code → Download ZIP** on this repository, or clone it, and extract it to a folder.
 2. **Set up and check:** read `setup.bat` and the [Windows installation guide](docs/INSTALL_WINDOWS.md), then run `setup.bat` on a **test PC**. The first run needs internet and may download several GB. Choose your voice from the numbered menu (Windows is the safe default). Run `run_tests.bat` when setup finishes.
 3. **Run Jarvis:** launch `run_jarvis.bat`, wait to hear **“Jarvis online”**, then say **“Jarvis, what time is it?”** or click TALK/type in the HUD. Test **“Jarvis, open Notepad”** and **“Jarvis, explain flexbox”** next. [Troubleshooting](docs/TROUBLESHOOTING.md) is available if something doesn't start.
 
 **Your voice, your choice:** Setup offers **1. Windows voice** (default; no additional voice download) or **2. Cori** (optional British female Piper voice with public-domain training recordings; verify model and output rights). Press **Enter** or leave setup unattended to use the Windows voice. Your choice is saved to the private, Git-ignored `commands.json`. To change it later, run `change_voice.bat` and restart Jarvis. Alan is not offered in the public release; see [voice licensing](docs/LICENSE_REVIEW.md).
 
-**Pre-public release gate:** Before making this repository public, complete the [release readiness checklist](RELEASE_READINESS.md) and [pre-public audit](docs/PREPUBLIC_RELEASE_AUDIT.md). The pretrained `hey_jarvis` wake-word model has a **noncommercial license**. Ordinary startup now listens for **“Jarvis, …”** using the existing local Whisper speech recognizer. It does **not** load the restricted pretrained wake-word model. TALK, typing, and `--button-only` remain available; the noncommercial model is opt-in via `--wake` only. A passing GitHub Actions run does not replace a fresh Windows installation and actual audio-device test.
+**Public source scope:** Read the [release readiness checklist](RELEASE_READINESS.md), [release notes](RELEASE_NOTES.md), and [pre-public audit](docs/PREPUBLIC_RELEASE_AUDIT.md) before installing. The pretrained `hey_jarvis` wake-word model has a **noncommercial license**. Ordinary startup now listens for **“Jarvis, …”** using the existing local Whisper speech recognizer. It does **not** load the restricted pretrained wake-word model. TALK, typing, and `--button-only` remain available; the noncommercial model is opt-in via `--wake` only. A passing GitHub Actions run does not replace a fresh Windows installation and actual audio-device test.
 
 **Dependency note:** `requirements.lock.txt` now pins the versions reported from the working Windows 11 setup on October 20, 2026. `setup.bat` uses it when available; `requirements.txt` remains the readable dependency list. The lock has not yet been independently validated on a completely clean Windows PC.
 
@@ -95,7 +95,7 @@ After setup, listen for **“Jarvis online.”** Say **“Jarvis, what time is i
 > This automated setup is still awaiting independent Windows validation. **Review a downloaded script before executing it**, and do not blindly bypass SmartScreen or other operating-system warnings.
 
 1. [Review the Windows setup guide](docs/INSTALL_WINDOWS.md) and [third-party licenses](THIRD_PARTY_NOTICES.md).
-2. If you are an authorized tester, clone this private repository or download its source ZIP. Public downloads will be available only after approval and a verified release.
+2. Clone the public source or use **Code → Download ZIP**. Review `setup.bat`, safety instructions and third-party terms before executing it.
 3. Inspect `setup.bat`, then run it on a **test Windows machine** to install the listed tools and models. The revised installer stops on detected failures rather than claiming success.
 4. Run `run_tests.bat` to exercise the mocked command/UI unit tests and opt-in wake-word safeguards.
 5. After verifying setup, run `run_jarvis.bat` or choose a terminal mode:
@@ -143,7 +143,7 @@ update_lock.bat         Generate a reviewed lock file from the working Windows e
 change_voice.bat         Reopen the numbered voice selection without reinstalling
 voice_settings.py       Validate and read the private voice choice
 tools/select_voice.py   Strict menu and optional Cori downloader
-requirements.txt       Readable dependency list; lock file is pending a verified Windows environment
+requirements.txt       Readable dependency list; requirements.lock.txt pins reported working Windows versions
 tests/                 Mocked command and local HTTP regression tests
 docs/                  Install, architecture, security and troubleshooting
 THIRD_PARTY_NOTICES.md Libraries, models and voice licensing
@@ -152,7 +152,7 @@ RELEASE_READINESS.md   Outstanding publishing checks
 
 ## Testing and transparency
 
-The code-level suite is configured for Windows and Ubuntu GitHub-hosted runners with test dependencies installed. The current private candidate has **61 passing isolated tests on Windows Server 2025 and Ubuntu 24.04** ([verified CI run](https://github.com/tabitha-dev/jarvis-local-ai/actions/runs/39518410655)): 47 prior functional/unit checks, new hands-free name-recognition and Windows audio checks, and three tracked-file/release-hygiene checks, covering commands, HUD states, local HTTP authorization, voice selection and fallback, and release safeguards; see [GitHub Actions](https://github.com/tabitha-dev/jarvis-local-ai/actions) for the latest run result. Run `python -m unittest discover tests -v` after installing the necessary test dependencies. The suite **mocks** application launches and audio actions; it does not prove that Chrome opened, that wake-word recognition worked through a physical microphone, or that the model installed successfully. See the [release checklist](RELEASE_READINESS.md) for the real Windows validation still needed.
+The code-level suite is configured for Windows and Ubuntu GitHub-hosted runners with test dependencies installed. This public source candidate has **61 passing isolated tests on Windows Server 2025 and Ubuntu 24.04** ([verified CI run](https://github.com/tabitha-dev/jarvis-local-ai/actions/runs/39523115430)): 47 prior functional/unit checks, new hands-free name-recognition and Windows audio checks, and three tracked-file/release-hygiene checks, covering commands, HUD states, local HTTP authorization, voice selection and fallback, and release safeguards; see [GitHub Actions](https://github.com/tabitha-dev/jarvis-local-ai/actions) for the latest run result. Run `python -m unittest discover tests -v` after installing the necessary test dependencies. The suite **mocks** application launches and audio actions; it does not prove that Chrome opened, that wake-word recognition worked through a physical microphone, or that the model installed successfully. See the [release checklist](RELEASE_READINESS.md) for the real Windows validation still needed.
 
 **Local inference ≠ every action is offline.** Model inference is intended to run locally after downloading model weights; opening web pages and searching are online actions. A recorded HUD status message is not proof that a live network-disconnection test occurred.
 
@@ -164,7 +164,7 @@ The code-level suite is configured for Windows and Ubuntu GitHub-hosted runners 
 
 Made by **[Tabitha Dev](https://code.tabitha.dev)** · [GitHub](https://github.com/tabitha-dev) · [YouTube tutorials](https://www.youtube.com/@tabitha-dev)
 
-**Project source code:** [MIT License](LICENSE) (copyright Tabitha Dev). This covers the project-authored code only, **not** downloaded models, voices, data sets, software dependencies or third-party trademarks. A public project release is still pending. Model weights, voices and dependencies belong to their respective owners and follow their **separate** licenses; see [Third-party notices](THIRD_PARTY_NOTICES.md). OpenWakeWord's pretrained models may carry noncommercial limits. No Marvel artwork, voice or footage is distributed, and this project is not affiliated with Marvel or Disney.
+**Project source code:** [MIT License](LICENSE) (copyright Tabitha Dev). This covers the project-authored code only, **not** downloaded models, voices, data sets, software dependencies or third-party trademarks. The project-authored source is available under MIT; this does not grant licenses to downloaded third-party assets. Model weights, voices and dependencies belong to their respective owners and follow their **separate** licenses; see [Third-party notices](THIRD_PARTY_NOTICES.md). OpenWakeWord's pretrained models may carry noncommercial limits. No Marvel artwork, voice or footage is distributed, and this project is not affiliated with Marvel or Disney.
 
 <div align="center">
 
