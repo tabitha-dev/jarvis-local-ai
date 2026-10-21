@@ -1,0 +1,46 @@
+# Exact versions from a working Windows 11 install (2026-10-20), made with update_lock.bat.
+# setup.bat installs from this file when it exists. Windows-only packages are marked.
+anyio==4.15.1
+av==19.0.1
+certifi==2026.10.19
+cffi==2.1.1
+charset-normalizer==3.5.2
+click==8.5.0
+cloudpickle==3.1.2
+colorama==0.4.6
+comtypes==1.4.17; sys_platform == "win32"
+ctranslate2==4.8.3
+faster-whisper==1.2.1
+filelock==4.2.4
+flatbuffers==25.12.19
+fsspec==2026.9.0
+h11==0.16.0
+hf-xet==1.7.0
+httpcore2==2.15.1
+httpx2==2.15.1
+huggingface_hub==2.2.0
+idna==3.20
+joblib==1.6.0
+narwhals==2.27.1
+numpy==2.5.4
+onnxruntime==1.31.0
+openwakeword==0.6.0
+packaging==26.3
+pathvalidate==3.3.1
+piper-tts==1.8.0
+protobuf==7.36.2
+pycparser==3.11
+pypiwin32==223; sys_platform == "win32"
+pyttsx3==2.99
+pywin32==312; sys_platform == "win32"
+PyYAML==6.0.3
+requests==2.34.2
+scikit-learn==1.9.1
+scipy==1.18.1
+sounddevice==0.5.6
+threadpoolctl==3.7.0
+tokenizers==0.23.3
+tqdm==4.70.1
+truststore==0.10.5
+typing_extensions==4.16.0
+urllib3==2.8.0
