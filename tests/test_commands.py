@@ -67,7 +67,7 @@ class TestRouting(FakeLaunchers):
         self.assertEqual(self.calls, [])
 
     def test_time_questions_are_instant(self):
-        for q in ("What time is it right now?", "Hey Jarvis, what time is it?", "what's the time now",
+        for q in ("What time is it right now?", "Hey Jarvis, what time is it?", "Hi Jarvis, what time is it right now?", "hello jarvis what time is it", "what's the time now",
                   "tell me the time please", "do you know what time it is", "What day is it today?"):
             reply = self.run_cmd(q)
             self.assertIsNotNone(reply, q)
