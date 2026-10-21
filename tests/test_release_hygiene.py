@@ -53,7 +53,7 @@ class PublicReleaseHygieneTests(unittest.TestCase):
     def test_release_stays_on_hold_without_windows_evidence(self):
         readiness = (ROOT / "RELEASE_READINESS.md").read_text(encoding="utf-8")
         self.assertIn("PRIVATE, PRE-RELEASE", readiness)
-        self.assertIn("fresh windows", readiness.lower())
+        self.assertIn("independent clean windows", readiness.lower())
         self.assertIn("requirements.lock.txt", readiness)
 
 
