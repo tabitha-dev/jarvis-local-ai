@@ -19,6 +19,9 @@ BANNED_NAMES = {"commands.json", "windows-test-report.txt",
 
 
 def tracked_paths() -> list[str]:
+    # Download ZIP copies do not contain .git; skip the tracked-path check there.
+    if not (ROOT / ".git").exists():
+        raise unittest.SkipTest("not a Git checkout (for example a downloaded ZIP)")
     result = subprocess.run(
         ["git", "-C", str(ROOT), "ls-files", "-z"],
         check=True, capture_output=True, timeout=10,
@@ -50,7 +53,7 @@ class PublicReleaseHygieneTests(unittest.TestCase):
     def test_release_stays_on_hold_without_windows_evidence(self):
         readiness = (ROOT / "RELEASE_READINESS.md").read_text(encoding="utf-8")
         self.assertIn("PRIVATE, PRE-RELEASE", readiness)
-        self.assertIn("fresh windows", readiness.lower())
+        self.assertIn("independent clean windows", readiness.lower())
         self.assertIn("requirements.lock.txt", readiness)
 
 

@@ -113,7 +113,7 @@ CONFIG = load_config()
 def normalize(text):
     t = text.lower().strip()
     t = re.sub(r"[.!?,]+$", "", t).strip()
-    t = re.sub(r"^(hey |ok |okay )?jarvis[,\s]*", "", t)
+    t = re.sub(r"^((?:hey|hi|hello|ok|okay|yo)[,\s]+)?jarvis[,\s]*", "", t)
     t = re.sub(r"^(can you |could you |would you |will you |please |i want you to |go ahead and )+", "", t)
     t = re.sub(r"\s+please$", "", t)
     t = re.sub(r"^(the |my )(?=(chrome|edge|calculator|notepad|terminal|settings|task manager)\b)", "", t)

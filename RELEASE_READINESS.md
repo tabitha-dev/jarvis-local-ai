@@ -9,9 +9,9 @@
 - [x] Provide clear setup and safety documentation with authentic interface imagery.
 - [x] Provide an explicit source-only package checker (no automatic publishing).
 - [x] **61 of 61 isolated checks PASS on Windows Server 2025 and Ubuntu 24.04**, Python 3.12, on the private candidate branch (47 prior tests + 11 listening/voice tests + 3 release-hygiene checks). [Verified CI run](https://github.com/tabitha-dev/jarvis-local-ai/actions/runs/39518410655). The core tests include voice selection and fallback; tests install only development/test dependencies and **do not** download local AI models or verify microphone/speaker operation.
-- [ ] On the working Windows PC run `update_lock.bat` after successful setup, validate the generated `requirements.lock.txt` with `pip check`, and commit the tested versions. **Lock file not yet supplied; unpinned installs can drift.**
+- [x] **Windows dependency lock supplied:** the October 20 Windows 11 `requirements.lock.txt` generated with `update_lock.bat` is committed. The maintainer reports `pip check` passed on that working setup. A second clean-PC installation remains untested.
 - [x] User-reported Windows 11 *fresh-folder* end-to-end test on the creator's existing computer (2026-10-20): speech recognition for “Jarvis,” audible voice reply, and app launch. Python/Ollama were already installed; this is **not** an independent clean-PC test.
-- [ ] Complete and record the [fresh Windows verification checklist](docs/WINDOWS_RELEASE_TEST.md), including an **independent clean Windows 10/11 setup** with a working microphone, output speaker and actual model downloads.
+- [ ] **Recommended follow-up (not a condition for a disclosed source release):** complete an independent clean Windows 10/11 installation where Python and Ollama were not previously installed. The current Windows 11 fresh-folder test was on a PC that already had both; do not claim a clean-PC installation was verified.
 - [ ] Review Windows command allowlists, local HTTP routes and setup scripts on a real PC.
 - [ ] Review the [pre-public audit and handoff](docs/PREPUBLIC_RELEASE_AUDIT.md), then complete privacy-safe test evidence before a source-only public release.
 
