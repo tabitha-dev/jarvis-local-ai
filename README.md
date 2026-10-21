@@ -33,7 +33,7 @@
 
 **Pre-public release gate:** Before making this repository public, complete the [release readiness checklist](RELEASE_READINESS.md) and [pre-public audit](docs/PREPUBLIC_RELEASE_AUDIT.md). The pretrained `hey_jarvis` wake-word model has a **noncommercial license**. Ordinary startup now listens for **“Jarvis, …”** using the existing local Whisper speech recognizer. It does **not** load the restricted pretrained wake-word model. TALK, typing, and `--button-only` remain available; the noncommercial model is opt-in via `--wake` only. A passing GitHub Actions run does not replace a fresh Windows installation and actual audio-device test.
 
-**Dependency note:** `requirements.txt` is a readable, unpinned list until `requirements.lock.txt` is generated on a working Windows setup. `setup.bat` prefers the lock file once it exists. Maintainers should run `update_lock.bat`, review and commit the resulting lock file **after** a successful real-Windows test; do not guess package versions.
+**Dependency note:** `requirements.lock.txt` now pins the versions reported from the working Windows 11 setup on October 20, 2026. `setup.bat` uses it when available; `requirements.txt` remains the readable dependency list. The lock has not yet been independently validated on a completely clean Windows PC.
 
 ## Why I built this
 
