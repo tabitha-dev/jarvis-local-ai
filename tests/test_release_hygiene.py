@@ -50,9 +50,10 @@ class PublicReleaseHygieneTests(unittest.TestCase):
         self.assertIn("Cori", notice)
         self.assertIn("alan", notice.lower())
 
-    def test_release_stays_on_hold_without_windows_evidence(self):
+    def test_public_release_status_preserves_clean_pc_disclosure(self):
         readiness = (ROOT / "RELEASE_READINESS.md").read_text(encoding="utf-8")
-        self.assertIn("PRIVATE, PRE-RELEASE", readiness)
+        self.assertIn("PUBLIC SOURCE RELEASE", readiness)
+        self.assertIn("Public source release", (ROOT / "README.md").read_text(encoding="utf-8"))
         self.assertIn("independent clean windows", readiness.lower())
         self.assertIn("requirements.lock.txt", readiness)
 
