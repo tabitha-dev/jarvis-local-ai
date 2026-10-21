@@ -19,6 +19,9 @@ BANNED_NAMES = {"commands.json", "windows-test-report.txt",
 
 
 def tracked_paths() -> list[str]:
+    # Download ZIP copies do not contain .git; skip the tracked-path check there.
+    if not (ROOT / ".git").exists():
+        raise unittest.SkipTest("not a Git checkout (for example a downloaded ZIP)")
     result = subprocess.run(
         ["git", "-C", str(ROOT), "ls-files", "-z"],
         check=True, capture_output=True, timeout=10,
