@@ -4,7 +4,8 @@ Jarvis separates deterministic commands from conversational responses. The HUD i
 
 ```mermaid
 flowchart TD
- M[Microphone] --> TBTN[HUD TALK button / Enter] --> S[faster-whisper]
+ M[Microphone] --> N[Default Jarvis-name listener] --> S[faster-whisper]
+ M --> TBTN[HUD TALK button / Enter] --> S
  M --> W[Optional openWakeWord --wake] --> S
  T[HUD typed input] --> R[Command router]
  S --> R

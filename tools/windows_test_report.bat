@@ -51,8 +51,7 @@ if errorlevel 1 (
 if exist "voices\*.onnx" (
   >> "%OUT%" echo PRESENT: At least one voice file exists. Voice operation was not tested.
 ) else (
-  >> "%OUT%" echo MISSING: No voice file in voices folder.
-  set "STATUS=1"
+  >> "%OUT%" echo OPTIONAL: No Piper voice installed. Windows SAPI needs no voice download.
 )
 if not exist "%PY%" goto :report_end
 >> "%OUT%" echo.

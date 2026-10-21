@@ -6,7 +6,7 @@ Jarvis can speak with the **built-in Windows voice** (the default) or the option
 
 | Voice | Sounds like | Download | License |
 | --- | --- | --- | --- |
-| **1. Windows built-in** (default) | Whatever voice Windows is set to, for example Microsoft David or Zira | None | Part of Windows; applicable Windows usage terms still apply |
+| **1. Windows built-in** (default) | Whatever voice Windows is set to, for example Microsoft David or Zira | None | Windows SAPI voice output, with pyttsx3 fallback; applicable Windows usage terms still apply |
 | **2. Cori** (`en_GB-cori-medium`) | British English, female, more natural | Approximately 60 MB if selected (size varies) | Trained from scratch on public-domain LibriVox recordings ([model card](https://huggingface.co/rhasspy/piper-voices/blob/main/en/en_GB/cori/medium/MODEL_CARD)); confirm model/output rights for intended use |
 
 Not sure? Keep the Windows voice. It needs no extra model download, and you can switch later.
@@ -39,7 +39,7 @@ Only voices listed there work with Jarvis. For additional voices, try **Settings
 | --- | --- |
 | You chose Cori but hear the Windows voice | The Cori file is missing or did not load. Run `change_voice.bat`, choose **2**, and watch for download errors. Jarvis falls back to Windows when Cori cannot load. |
 | Cori download fails | Check your internet connection and run `change_voice.bat` again. Your previous preference stays saved until a new one succeeds. |
-| No sound at all | Check which output speaker Windows uses, then try typing a question in the HUD. |
+| No sound at all | Check the Windows default speaker/output device, confirm the system volume isn't muted, then type a question in the HUD. The updated app uses SAPI first and reports the selected output when available. |
 | The voice talks too fast or too slow | For Windows TTS, open `jarvis.py`, find `setProperty("rate", 185)`, and try a value between 150 and 220. |
 
 ## Advanced: add another Piper voice

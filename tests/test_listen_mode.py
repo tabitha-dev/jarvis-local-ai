@@ -10,14 +10,17 @@ import jarvis  # noqa: E402
 
 
 def args(**kw):
-    base = dict(ptt=False, text=False, no_ui=False, wake=False)
+    base = dict(ptt=False, text=False, no_ui=False, wake=False, button_only=False)
     base.update(kw)
     return argparse.Namespace(**base)
 
 
 class ListenModeTests(unittest.TestCase):
-    def test_default_is_talk_button(self):
-        self.assertEqual(jarvis.listen_mode(args()), "button")
+    def test_default_is_say_jarvis(self):
+        self.assertEqual(jarvis.listen_mode(args()), "name")
+
+    def test_button_only_flag(self):
+        self.assertEqual(jarvis.listen_mode(args(button_only=True)), "button")
 
     def test_wake_word_only_when_asked(self):
         self.assertEqual(jarvis.listen_mode(args(wake=True)), "wake")
@@ -38,6 +41,46 @@ class ListenModeTests(unittest.TestCase):
                 self.calls += 1
                 return ("talk", None) if self.calls > 2 else None
         self.assertEqual(jarvis.TalkButton().wait(Mic(), UI()), ("talk", None))
+
+    def test_name_detection_rejects_background_talk(self):
+        detect = jarvis.strip_wake_name
+        self.assertEqual(detect("Jarvis, what time is it?"), "what time is it")
+        self.assertEqual(detect("Hey Jarvis, open Notepad"), "open Notepad")
+        self.assertEqual(detect("Hi Jarvis"), "")
+        self.assertEqual(detect("Hello Jarvis."), "")
+        self.assertIsNone(detect("Someone was talking about Jarvis"))
+        self.assertIsNone(detect("What time is it?"))
+
+    def test_name_trigger_takes_command_in_one_phrase(self):
+        import numpy as np
+        class Ears:
+            def transcribe(self, sound): return "Jarvis, open Notepad"
+        class Mic:
+            noise_floor = 10.0
+            def __init__(self):
+                loud = (np.ones(1280) * 5000).astype("int16")
+                quiet = np.zeros(1280, dtype="int16")
+                self.chunks = [quiet, loud, loud] + [quiet] * 20
+            def flush(self): pass
+            def read(self): return self.chunks.pop(0)
+        self.assertEqual(jarvis.NameTrigger(Ears()).wait(Mic()), ("said","open Notepad"))
+
+    def test_name_trigger_ignores_unaddressed_talk(self):
+        import numpy as np
+        class Ears:
+            def __init__(self): self.calls = 0
+            def transcribe(self, sound):
+                self.calls += 1
+                return "Talking about something else" if self.calls == 1 else "Jarvis"
+        class Mic:
+            noise_floor = 10.0
+            def __init__(self):
+                loud = (np.ones(1280) * 5000).astype("int16")
+                quiet = np.zeros(1280, dtype="int16")
+                self.chunks = ([loud, loud] + [quiet] * 10) * 2 + [quiet] * 5
+            def flush(self): pass
+            def read(self): return self.chunks.pop(0)
+        self.assertEqual(jarvis.NameTrigger(Ears()).wait(Mic()), ("wake",None))
 
     def test_setup_does_not_download_wake_word_model(self):
         setup = (ROOT / "setup.bat").read_text(encoding="utf-8")
